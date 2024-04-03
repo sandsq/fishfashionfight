@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Entity" load_steps=2 format=3 uid="uid://blgbhrq87remc"]
+
+[ext_resource type="Script" path="res://fish/entity.gd" id="1_b1r2x"]
+
+[resource]
+script = ExtResource("1_b1r2x")
+arrangement = Array[Vector2]([])

@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Inventory" load_steps=2 format=3 uid="uid://c18wbaeda11ch"]
+
+[ext_resource type="Script" path="res://inventory/inventory.gd" id="1_cfcal"]
+
+[resource]
+script = ExtResource("1_cfcal")
+fish_paths = Array[NodePath]([NodePath(""), NodePath(""), NodePath(""), NodePath(""), NodePath(""), NodePath(""), NodePath(""), NodePath(""), NodePath("")])
