@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Entity" load_steps=3 format=3 uid="uid://ltoaisvvvmmc"]
+
+[ext_resource type="Script" path="res://fish/entity.gd" id="1_arluo"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y073o"]
+resource_local_to_scene = true
+load_path = "res://.godot/imported/generic1x2.png-2fd8e62fb0e368cef8177dc0cb4856c9.ctex"
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_arluo")
+texture = SubResource("CompressedTexture2D_y073o")
+arrangement = Array[Vector2]([Vector2(0, 0), Vector2(1, 0)])

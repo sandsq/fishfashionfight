@@ -20,7 +20,7 @@ func _get_drag_data(_position):
 	print("parent fish %s" % fish)
 	var data = {}
 	if fish is Entity:
-		var affected_indexes = fish.get_arrangement_indexes()
+		var affected_indexes = fish.get_absolute_arrangement_indexes()
 		print("affected indexes %s" % [affected_indexes])
 		
 		var drag_preview = TextureRect.new()

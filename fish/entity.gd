@@ -4,6 +4,7 @@ class_name Entity
 @export var texture: Texture
 @export var arrangement: Array[Vector2] ## specifies fish shape with 2d indexes
 
+var absolute_arrangement_indexes: Array[int]
 
 func make_fish_parts() -> Array[FishPart]:
 	var fish_parts: Array[FishPart]
@@ -33,3 +34,9 @@ func get_arrangement_indexes():
 	for vec in arrangement:
 		arrangement_indexes.append(GS.grid_to_index(vec))
 	return arrangement_indexes
+
+func get_absolute_arrangement_indexes():
+	if absolute_arrangement_indexes.size() > 0:
+		return absolute_arrangement_indexes
+	else:
+		return get_arrangement_indexes()
