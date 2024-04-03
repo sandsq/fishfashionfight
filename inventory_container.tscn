@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://vxnin7r6q1nq"]
+
+[node name="InventoryContainer" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.0666667, 0.317647, 0.32549, 1)
