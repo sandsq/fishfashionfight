@@ -1,5 +1,7 @@
 extends CenterContainer
 
+signal can_be_dropped_signal
+
 var inventory = preload("res://inventory/inventory.tres")
 var associated_fish_part: FishPart
 var icon_preview: TextureRect
@@ -39,9 +41,11 @@ func _get_drag_data(_position):
 		
 		icon_preview = TextureRect.new()
 		icon_preview.texture = fish.texture
+		icon_preview.visible = false
+		#icon_preview.mouse_filter = MOUSE_FILTER_PASS
 		var drag_preview = Control.new() # TextureRect.new()
 		drag_preview.add_child(icon_preview)
-		icon_preview.visible = false
+		#drag_preview.mouse_filter = MOUSE_FILTER_PASS
 		should_update_preview = true
 		set_drag_preview(drag_preview)
 		
@@ -57,20 +61,21 @@ func _can_drop_data(_position, data):
 	if data is Dictionary and data.has("fish"):
 		var my_fish_part_index = get_index()
 	
-		var fish_to_drop = data.fish
-		var fish_to_drop_abs_inds = data.fish_absolute_indexes
+		#var fish_to_drop = data.fish
+		#var fish_to_drop_abs_inds = data.fish_absolute_indexes
 		var fish_to_drop_rel_inds = data.fish_relative_indexes
 		
 		var new_abs_inds = fish_to_drop_rel_inds.map(
 				func(i): return i + my_fish_part_index)
 		
-		print("calculating if these indexes can be dropped %s" 
+		print("calculating if something can be dropped here %s" 
 				% [new_abs_inds])
 			
 		for ind in new_abs_inds:
 			if ind >= GS.INVENTORY_SIZE:
+				emit_signal("can_be_dropped_signal", false)
 				return false
-			
+				
 			var potential_fish_part = inventory.get_fish_parts()[ind]
 			if potential_fish_part is FishPart:
 				var potential_fish = potential_fish_part.get_parent_fish()
@@ -80,14 +85,19 @@ func _can_drop_data(_position, data):
 						% [potential_fish_abs_inds])
 				for ind2 in potential_fish_abs_inds:
 					if new_abs_inds.has(ind2):
+						emit_signal("can_be_dropped_signal", false)
 						return false
+		emit_signal("can_be_dropped_signal", true)	
 		return true
 	else:
+		emit_signal("can_be_dropped_signal", false)
 		return false
+
+
 	
 func _drop_data(_position, data):
 	var my_fish_part_index = get_index()
-	var my_fish_part = inventory.fish_parts[my_fish_part_index]
+	#var my_fish_part = inventory.fish_parts[my_fish_part_index]
 	
 	var relative_indexes_to_be_dropped = data.fish_relative_indexes
 	var fish_to_be_dropped = data.fish
@@ -97,14 +107,14 @@ func _drop_data(_position, data):
 	for ind in relative_indexes_to_be_dropped:
 		new_absolute_indexes_to_be_dropped.append(ind + my_fish_part_index)
 	
-	if my_fish_part is FishPart:
-		var my_fish = my_fish_part.get_parent_fish()
+	#if my_fish_part is FishPart:
+		#var my_fish = my_fish_part.get_parent_fish()
 	
 	fish_to_be_dropped.set_absolute_arrangement_indexes(
 			new_absolute_indexes_to_be_dropped)
 			
 	inventory.set_fish_parts(
 			new_absolute_indexes_to_be_dropped, fish_parts_to_be_dropped)
-	print("need to handles the swap case still")
+	
 		
 		

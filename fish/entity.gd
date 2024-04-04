@@ -34,7 +34,7 @@ func get_arrangement():
 	return arrangement
 	
 func get_arrangement_indexes():
-	var loc_arrangement_indexes: Array[int]
+	var loc_arrangement_indexes: Array[int] = []
 	for vec in arrangement:
 		loc_arrangement_indexes.append(GS.grid_to_index(vec))
 	return loc_arrangement_indexes

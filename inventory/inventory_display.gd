@@ -3,17 +3,26 @@ extends GridContainer
 var num_slots: int
 var inventory = preload("res://inventory/inventory.tres")
 var InventorySlotDisplay = preload("res://inventory/inventory_slot_display.tscn")
-
+var can_be_dropped = true
+var mouse_exited_window = false
+var mouse_exited_grid_area = false 
 
 func _ready():
 	self.columns = GS.INVENTORY_COLS
-	self.set_size(Vector2(GS.INVENTORY_ROWS * GS.GRID_SIZE, GS.INVENTORY_COLS * GS.GRID_SIZE))
+	self.set_size(Vector2(GS.INVENTORY_ROWS * GS.GRID_SIZE, 
+			GS.INVENTORY_COLS * GS.GRID_SIZE))
 	self.num_slots = GS.INVENTORY_SIZE
-	print("num slots %s vs inventory size %s" % [num_slots, inventory.get_fish_parts().size()])
+	print("num slots %s vs inventory size %s" 
+			% [num_slots, inventory.get_fish_parts().size()])
 	assert(num_slots == inventory.get_fish_parts().size())
+
+	self.mouse_exited.connect(func(): mouse_exited_grid_area = true)
+	self.mouse_entered.connect(func(): mouse_exited_grid_area = false)
 
 	for i in range(num_slots):
 		var isd = InventorySlotDisplay.instantiate()
+		isd.can_be_dropped_signal.connect(
+				func(b): can_be_dropped = b)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
 		add_child(isd)
 	inventory.add_to_inventory()
@@ -38,7 +47,17 @@ func _on_fishes_changed(indexes):
 		update_inventory_slot_display(i)
 		
 func _input(event):
-	if inventory.drag_data != null \
-			and event.is_action_released("ui_left_click"):
-		inventory.set_fish_parts(inventory.drag_data.fish_absolute_indexes, 
-				inventory.drag_data.fish.make_fish_parts())
+	if event.is_action_released("ui_left_click"):
+		if inventory.drag_data != null:
+			if not can_be_dropped || mouse_exited_window \
+					|| mouse_exited_grid_area:
+				print("in _input, logic for unhandled input")
+				inventory.set_fish_parts(
+						inventory.drag_data.fish_absolute_indexes, 
+						inventory.drag_data.fish.make_fish_parts())
+						
+func _notification(what):
+	if what == NOTIFICATION_WM_MOUSE_EXIT:
+		mouse_exited_window = true
+	elif what == NOTIFICATION_WM_MOUSE_ENTER:
+		mouse_exited_window = false
