@@ -18,3 +18,13 @@ offset_bottom = 40.0
 
 [node name="ActiveInventoryDisplay" parent="CenterContainer" instance=ExtResource("1_k553v")]
 layout_mode = 2
+
+[node name="ChangeSceneButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 338.0
+offset_top = 185.0
+offset_right = 389.0
+offset_bottom = 216.0
+text = "Fight!"
+
+[connection signal="pressed" from="ChangeSceneButton" to="CenterContainer/ActiveInventoryDisplay" method="_on_change_scene_button_pressed"]

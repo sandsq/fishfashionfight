@@ -3,6 +3,7 @@ extends GridContainer
 var num_slots: int
 var inventory = preload("res://inventory/inventory.tres")
 var InventorySlotDisplay = preload("res://inventory/inventory_slot_display.tscn")
+var battle_scene = preload("res://battle.tscn")
 var can_be_dropped = true
 var mouse_exited_window = false
 var mouse_exited_grid_area = false 
@@ -37,27 +38,49 @@ func update_inventory_display():
 func update_inventory_slot_display(i):
 	var inventory_slot_display = get_child(i)
 	var fish_part = inventory.get_fish_parts()[i]
-	print("updating slot %s with fish part %s" % [i, fish_part])
+	print("visually updating slot %s with fish part %s" % [i, fish_part])
 	inventory_slot_display.display_fish_part(fish_part)
 
 
 func _on_fishes_changed(indexes):
-	print("on fishes changed triggered for indexes %s" % [indexes])
+	#print("on fishes changed triggered for indexes %s" % [indexes])
 	for i in indexes:
 		update_inventory_slot_display(i)
+	print("telling inventory display that %s indexes changed, new inventory %s" % [indexes, inventory.get_fish_parts()])
 		
 func _input(event):
 	if event.is_action_released("ui_left_click"):
 		if inventory.drag_data != null:
 			if not can_be_dropped || mouse_exited_window \
 					|| mouse_exited_grid_area:
-				print("in _input, logic for unhandled input")
+				#print("@@@@@ in _input, logic for unhandled input, 
+						#returning fish parts to %s" % 
+						#[inventory.drag_data.fish_absolute_indexes])
+				#print("@@@@@ in _input, logic for unhandled input, 
+						#can be dropped %s, exited window %s, exited grid %s" % 
+						#[can_be_dropped, mouse_exited_window, 
+						#mouse_exited_grid_area])
 				inventory.set_fish_parts(
 						inventory.drag_data.fish_absolute_indexes, 
 						inventory.drag_data.fish.make_fish_parts())
+			#else:
+				#inventory.drag_data = null
 						
 func _notification(what):
 	if what == NOTIFICATION_WM_MOUSE_EXIT:
+		#print("inventory display, mouse exited window")
 		mouse_exited_window = true
 	elif what == NOTIFICATION_WM_MOUSE_ENTER:
+		#print("inventory display, mouse entered window")
 		mouse_exited_window = false
+
+func _on_change_scene_button_pressed():
+	var old_scene = self
+	var new_scene = battle_scene.instantiate()
+	new_scene.previous_scene = old_scene
+	var current_inventory = inventory.get_fish_parts()
+	print("inventory right before switching to battle scene %s" % [current_inventory])
+	new_scene.inventory = current_inventory.duplicate()
+	get_tree().root.add_child(new_scene)
+	old_scene.visible = false
+

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bibg3h6b8787w"]
+
+[ext_resource type="Texture2D" uid="uid://buk7p18ney78g" path="res://assets/character.png" id="1_de2i3"]
+
+[node name="Character" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_de2i3")
+offset = Vector2(32, 32)

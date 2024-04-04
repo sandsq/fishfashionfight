@@ -29,6 +29,8 @@ func display_fish_part(fish_part):
 func _get_drag_data(_position):
 	var fish_part_index = get_index()
 	print("drag data index of fish part %s" % fish_part_index)
+	if not associated_fish_part is FishPart:
+		return
 	var fish = associated_fish_part.get_parent_fish()
 	print("drag data parent fish %s" % fish)
 	var data = {}
@@ -68,8 +70,8 @@ func _can_drop_data(_position, data):
 		var new_abs_inds = fish_to_drop_rel_inds.map(
 				func(i): return i + my_fish_part_index)
 		
-		print("calculating if something can be dropped here %s" 
-				% [new_abs_inds])
+		#print("calculating if something can be dropped here %s" 
+				#% [new_abs_inds])
 			
 		for ind in new_abs_inds:
 			if ind >= GS.INVENTORY_SIZE:
@@ -81,8 +83,8 @@ func _can_drop_data(_position, data):
 				var potential_fish = potential_fish_part.get_parent_fish()
 				var potential_fish_abs_inds = \
 						potential_fish.get_absolute_arrangement_indexes()
-				print("trying to drop into %s which already has a fish"
-						% [potential_fish_abs_inds])
+				#print("trying to drop into %s which already has a fish"
+						#% [potential_fish_abs_inds])
 				for ind2 in potential_fish_abs_inds:
 					if new_abs_inds.has(ind2):
 						emit_signal("can_be_dropped_signal", false)
@@ -116,5 +118,8 @@ func _drop_data(_position, data):
 	inventory.set_fish_parts(
 			new_absolute_indexes_to_be_dropped, fish_parts_to_be_dropped)
 	
+	print("after dropping, new inventory %s" % [inventory.get_fish_parts()])
+	
+	inventory.drag_data = null
 		
 		

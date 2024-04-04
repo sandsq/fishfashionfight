@@ -29,12 +29,8 @@ func add_to_inventory():
 	
 	var fish1 = onebytwofish
 	var fish2 = onebytwofish.duplicate()
-	var arr: Array[int] = []
-	arr.append(3)
-	arr.append(4)
-	var arr2: Array[int] = []
-	arr2.append(15)
-	arr2.append(16)
+	var arr: Array[int] = [3, 4]
+	var arr2: Array[int] = [15, 16]
 	fish1.set_absolute_arrangement_indexes(arr)
 	fish2.set_absolute_arrangement_indexes(arr2)
 	var fish_parts1x2 = fish1.make_fish_parts()
@@ -71,7 +67,8 @@ func set_fish_parts(indexes, new_fish_parts):
 	for i in indexes:
 		previous_items.append(fish_parts[i])
 		fish_parts[i] = new_fish_parts[current_ind]
-		current_ind += 1
+		current_ind += 1	
+	print("setting %s to new fish parts %s" % [indexes, new_fish_parts])
 	emit_signal("fishes_changed", indexes)
 	return previous_items
 	
@@ -81,6 +78,7 @@ func remove_fish_parts(indexes):
 	for i in indexes:
 		previous_items.append(fish_parts[i])
 		fish_parts[i] = null
+	print("removing fish parts at %s, inventory should by %s" % [indexes, fish_parts])
 	emit_signal("fishes_changed", indexes)
 	return previous_items
 	
