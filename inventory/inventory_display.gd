@@ -82,5 +82,6 @@ func _on_change_scene_button_pressed():
 	print("inventory right before switching to battle scene %s" % [current_inventory])
 	new_scene.inventory = current_inventory.duplicate()
 	get_tree().root.add_child(new_scene)
-	old_scene.visible = false
+	self.visible = false
+
 

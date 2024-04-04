@@ -1,9 +1,62 @@
-[gd_scene load_steps=2 format=3 uid="uid://bibg3h6b8787w"]
+[gd_scene load_steps=10 format=3 uid="uid://bibg3h6b8787w"]
 
 [ext_resource type="Texture2D" uid="uid://buk7p18ney78g" path="res://assets/character.png" id="1_de2i3"]
+[ext_resource type="Script" path="res://character.gd" id="1_grc1o"]
+[ext_resource type="PackedScene" uid="uid://cu4b76nvj43bn" path="res://character_stats.tscn" id="3_6l03o"]
+[ext_resource type="PackedScene" uid="uid://ew64v7v1l0j5" path="res://hurtbox.tscn" id="3_h7cqb"]
+[ext_resource type="Texture2D" uid="uid://cxmpyu348lk16" path="res://assets/generic1x1.png" id="4_7hn0p"]
+[ext_resource type="Script" path="res://weapon_hitbox.gd" id="5_e4wfj"]
 
-[node name="Character" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7l6t0"]
+resource_local_to_scene = true
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rb226"]
+radius = 16.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_whs8n"]
+radius = 16.0
+height = 64.0
+
+[node name="Character" type="CharacterBody2D"]
+script = ExtResource("1_grc1o")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_7l6t0")
 texture = ExtResource("1_de2i3")
 offset = Vector2(32, 32)
+
+[node name="CharacterStats" parent="." instance=ExtResource("3_6l03o")]
+
+[node name="Weapon" type="Sprite2D" parent="."]
+texture = ExtResource("4_7hn0p")
+metadata/_edit_group_ = true
+
+[node name="WeaponHitbox" type="Area2D" parent="Weapon"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("5_e4wfj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Weapon/WeaponHitbox"]
+shape = SubResource("CircleShape2D_rb226")
+
+[node name="Hurtbox" parent="." instance=ExtResource("3_h7cqb")]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+position = Vector2(32, 32)
+shape = SubResource("CapsuleShape2D_whs8n")
+
+[node name="HPLabel" type="Label" parent="."]
+offset_left = 8.0
+offset_top = 64.0
+offset_right = 60.0
+offset_bottom = 87.0
+text = "10 / 10"
+
+[connection signal="health_changed" from="CharacterStats" to="." method="_on_character_stats_health_changed"]
+[connection signal="max_health_changed" from="CharacterStats" to="." method="_on_character_stats_max_health_changed"]
+[connection signal="no_health" from="CharacterStats" to="." method="_on_character_stats_no_health"]
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+
+[editable path="Hurtbox"]
