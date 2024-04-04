@@ -20,7 +20,7 @@ func make_fish_parts() -> Array[FishPart]:
 		atlas_texture.set_region(Rect2(current_pos, Vector2(GS.GRID_SIZE, GS.GRID_SIZE)))
 		var fish_part = FishPart.new()
 		fish_part.set_texture(atlas_texture)
-		fish_part.set_position(current_pos)
+		#fish_part.set_position(current_pos)
 		fish_part.set_parent_fish(self)
 		#fish_parts[current_index] = fish_part
 		fish_parts.append(fish_part)

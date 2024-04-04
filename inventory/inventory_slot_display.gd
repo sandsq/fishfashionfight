@@ -2,8 +2,19 @@ extends CenterContainer
 
 var inventory = preload("res://inventory/inventory.tres")
 var associated_fish_part: FishPart
+var icon_preview: TextureRect
+var should_update_preview = false
+var update_counter = 0
 
 @onready var fish_part_texture_rect = $FishPartTextureRect
+
+func _process(_delta):
+	if should_update_preview:
+		update_counter += 1
+		if update_counter == 2:
+			icon_preview.visible = true
+			should_update_preview = false
+			update_counter = 0
 
 func display_fish_part(fish_part):
 	if fish_part is FishPart:
@@ -23,15 +34,23 @@ func _get_drag_data(_position):
 		var relative_indexes = fish.get_arrangement_indexes()
 		var absolute_indexes = fish.get_absolute_arrangement_indexes()
 		print("absolute indexes when getting drag data %s" % [absolute_indexes])
+		inventory.remove_fish_parts(absolute_indexes)
+		
+		
+		icon_preview = TextureRect.new()
+		icon_preview.texture = fish.texture
+		var drag_preview = Control.new() # TextureRect.new()
+		drag_preview.add_child(icon_preview)
+		icon_preview.visible = false
+		should_update_preview = true
+		set_drag_preview(drag_preview)
+		
 		
 		data.fish = fish
 		data.fish_absolute_indexes = absolute_indexes
 		data.fish_relative_indexes = relative_indexes
 		
-		var drag_preview = TextureRect.new()
-		drag_preview.texture = fish.texture
-		set_drag_preview(drag_preview)
-		inventory.remove_fish_parts(absolute_indexes)
+		
 	return data
 
 func _can_drop_data(_position, data):
@@ -74,5 +93,4 @@ func _drop_data(_position, data):
 			new_absolute_indexes_to_be_dropped, fish_parts_to_be_dropped)
 	print("need to handles the swap case still")
 		
-	inventory.drag_data = null
 		

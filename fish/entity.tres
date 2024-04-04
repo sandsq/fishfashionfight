@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_b1r2x")
+name = ""
 arrangement = Array[Vector2]([])

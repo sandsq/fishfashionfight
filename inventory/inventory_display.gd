@@ -13,7 +13,9 @@ func _ready():
 	assert(num_slots == inventory.get_fish_parts().size())
 
 	for i in range(num_slots):
-		add_child(InventorySlotDisplay.instantiate())
+		var isd = InventorySlotDisplay.instantiate()
+		#isd.set_position(GS.index_to_grid(i) * 1000)
+		add_child(isd)
 	inventory.add_to_inventory()
 	inventory.fishes_changed.connect(_on_fishes_changed)
 	update_inventory_display()
