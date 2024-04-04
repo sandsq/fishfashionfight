@@ -56,17 +56,31 @@ func _get_drag_data(_position):
 func _can_drop_data(_position, data):
 	if data is Dictionary and data.has("fish"):
 		var my_fish_part_index = get_index()
-		
+	
 		var fish_to_drop = data.fish
 		var fish_to_drop_abs_inds = data.fish_absolute_indexes
 		var fish_to_drop_rel_inds = data.fish_relative_indexes
 		
 		var new_abs_inds = fish_to_drop_rel_inds.map(
 				func(i): return i + my_fish_part_index)
-		print("calculating if these indexes can be dropped %s" % [new_abs_inds])
+		
+		print("calculating if these indexes can be dropped %s" 
+				% [new_abs_inds])
+			
 		for ind in new_abs_inds:
 			if ind >= GS.INVENTORY_SIZE:
 				return false
+			
+			var potential_fish_part = inventory.get_fish_parts()[ind]
+			if potential_fish_part is FishPart:
+				var potential_fish = potential_fish_part.get_parent_fish()
+				var potential_fish_abs_inds = \
+						potential_fish.get_absolute_arrangement_indexes()
+				print("trying to drop into %s which already has a fish"
+						% [potential_fish_abs_inds])
+				for ind2 in potential_fish_abs_inds:
+					if new_abs_inds.has(ind2):
+						return false
 		return true
 	else:
 		return false

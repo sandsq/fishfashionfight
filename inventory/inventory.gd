@@ -75,15 +75,6 @@ func set_fish_parts(indexes, new_fish_parts):
 	emit_signal("fishes_changed", indexes)
 	return previous_items
 	
-func swap_fish_parts(source_indexes, target_indexes):
-	var source_fish_parts: Array[Resource] = \
-			source_indexes.map(func(i): return fish_parts[i])
-	var target_fish_parts: Array[Resource] = \
-			target_indexes.map(func(i): return fish_parts[i])
-	
-
-	
-	
 
 func remove_fish_parts(indexes):
 	var previous_items: Array[Resource] = []
