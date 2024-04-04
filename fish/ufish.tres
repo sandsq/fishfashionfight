@@ -5,5 +5,6 @@
 
 [resource]
 script = ExtResource("1_8q1xk")
+name = "ufish"
 texture = ExtResource("2_wh8f4")
 arrangement = Array[Vector2]([Vector2(0, 0), Vector2(2, 0), Vector2(0, 1), Vector2(2, 1), Vector2(0, 2), Vector2(1, 2), Vector2(2, 2)])

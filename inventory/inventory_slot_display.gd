@@ -15,23 +15,49 @@ func display_fish_part(fish_part):
 
 func _get_drag_data(_position):
 	var fish_part_index = get_index()
-	print("index %s" % fish_part_index)
+	print("drag data index of fish part %s" % fish_part_index)
 	var fish = associated_fish_part.get_parent_fish()
-	print("parent fish %s" % fish)
+	print("drag data parent fish %s" % fish)
 	var data = {}
 	if fish is Entity:
-		var affected_indexes = fish.get_absolute_arrangement_indexes()
-		print("affected indexes %s" % [affected_indexes])
+		var relative_indexes = fish.get_arrangement_indexes()
+		var absolute_indexes = fish.get_absolute_arrangement_indexes()
+		print("absolute indexes when getting drag data %s" % [absolute_indexes])
+		
+		data.fish = fish
+		data.fish_part_absolute_indexes = absolute_indexes
+		data.fish_part_relative_indexes = relative_indexes
 		
 		var drag_preview = TextureRect.new()
 		drag_preview.texture = fish.texture
 		set_drag_preview(drag_preview)
-		
-		inventory.remove_fish_parts(affected_indexes)
+		inventory.remove_fish_parts(absolute_indexes)
 	return data
 
 func _can_drop_data(_position, data):
-	return true
+	return data is Dictionary and data.has("fish")
 	
 func _drop_data(_position, data):
-	pass
+	var my_fish_part_index = get_index()
+	var my_fish_part = inventory.fish_parts[my_fish_part_index]
+	
+	var relative_indexes_to_be_dropped = data.fish_part_relative_indexes
+	var fish_to_be_dropped = data.fish
+	var fish_parts_to_be_dropped = fish_to_be_dropped.make_fish_parts()
+	
+	var new_absolute_indexes_to_be_dropped: Array[int] = []
+	for ind in relative_indexes_to_be_dropped:
+		new_absolute_indexes_to_be_dropped.append(ind + my_fish_part_index)
+	
+	if my_fish_part is FishPart:
+		var my_fish = my_fish_part.get_parent_fish()
+	
+	fish_to_be_dropped.set_absolute_arrangement_indexes(
+			new_absolute_indexes_to_be_dropped)
+			
+	inventory.set_fish_parts(
+			new_absolute_indexes_to_be_dropped, fish_parts_to_be_dropped)
+	print("need to handles the swap case still")
+		
+	inventory.drag_data = null
+		
