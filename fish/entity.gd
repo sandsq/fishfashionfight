@@ -6,27 +6,29 @@ class_name Entity
 @export var arrangement: Array[Vector2] ## specifies fish shape with 2d indexes
 
 var absolute_arrangement_indexes: Array[int] ## specifies fish shape with 1d indexes, the indexes are the absolute positions in the grid
-
+var fish_parts: Array[FishPart]
 
 ## returns an array of fish parts that has a one-to-one mapping with the arrangement
 func make_fish_parts() -> Array[FishPart]:
-	var fish_parts: Array[FishPart] = []
-	for vec in arrangement:
-		var current_pos = vec * GS.GRID_SIZE
-		#var current_index = GS.grid_to_index(vec)
-		#print("grid index that has a fish part %s" % current_index)
-		var atlas_texture = AtlasTexture.new()
-		atlas_texture.set_atlas(texture)
-		atlas_texture.set_region(Rect2(current_pos, Vector2(GS.GRID_SIZE, GS.GRID_SIZE)))
-		var fish_part = FishPart.new()
-		fish_part.set_texture(atlas_texture)
-		#fish_part.set_position(current_pos)
-		fish_part.set_parent_fish(self)
-		#fish_parts[current_index] = fish_part
-		fish_parts.append(fish_part)
-		#print(fish_part)
-	#print(fish_parts)
-	return fish_parts
+	if fish_parts.size() > 0:
+		return fish_parts
+	else:
+		for vec in arrangement:
+			var current_pos = vec * GS.GRID_SIZE
+			#var current_index = GS.grid_to_index(vec)
+			#print("grid index that has a fish part %s" % current_index)
+			var atlas_texture = AtlasTexture.new()
+			atlas_texture.set_atlas(texture)
+			atlas_texture.set_region(Rect2(current_pos, Vector2(GS.GRID_SIZE, GS.GRID_SIZE)))
+			var fish_part = FishPart.new()
+			fish_part.set_texture(atlas_texture)
+			#fish_part.set_position(current_pos)
+			fish_part.set_parent_fish(self)
+			#fish_parts[current_index] = fish_part
+			fish_parts.append(fish_part)
+			#print(fish_part)
+		#print(fish_parts)
+		return fish_parts
 
 func get_arrangement():
 	return arrangement

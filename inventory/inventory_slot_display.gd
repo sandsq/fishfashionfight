@@ -50,7 +50,7 @@ func _get_drag_data(_position):
 		data.fish_absolute_indexes = absolute_indexes
 		data.fish_relative_indexes = relative_indexes
 		
-		
+	inventory.drag_data = data
 	return data
 
 func _can_drop_data(_position, data):

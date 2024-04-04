@@ -15,7 +15,7 @@ var ufishtest = preload("res://fish/ufish.tres")
 var onebytwofish = preload("res://fish/onebytwofish.tres")
 var twobyonefish = preload("res://fish/twobyonefish.tres")
 var onebyonefish = preload("res://fish/onebyone.tres")
-
+var drag_data = null
 	
 func add_to_inventory():
 	var ufish_parts = ufishtest.make_fish_parts()

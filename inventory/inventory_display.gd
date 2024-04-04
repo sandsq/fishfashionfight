@@ -36,3 +36,9 @@ func _on_fishes_changed(indexes):
 	print("on fishes changed triggered for indexes %s" % [indexes])
 	for i in indexes:
 		update_inventory_slot_display(i)
+		
+func _input(event):
+	if inventory.drag_data != null \
+			and event.is_action_released("ui_left_click"):
+		inventory.set_fish_parts(inventory.drag_data.fish_absolute_indexes, 
+				inventory.drag_data.fish.make_fish_parts())
