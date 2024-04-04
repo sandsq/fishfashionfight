@@ -2,12 +2,13 @@ extends CenterContainer
 
 signal can_be_dropped_signal
 
-var inventory = preload("res://inventory/inventory.tres")
+var inventory = null
 var associated_fish_part: FishPart
 var icon_preview: TextureRect
 var should_update_preview = false
 var update_counter = 0
 
+#@onready var inventory = 
 @onready var fish_part_texture_rect = $FishPartTextureRect
 
 func _process(_delta):

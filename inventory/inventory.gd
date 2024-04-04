@@ -1,4 +1,4 @@
-extends Resource
+extends Node2D
 class_name Inventory
 
 signal fishes_changed(indexes) ## array of positions that changed

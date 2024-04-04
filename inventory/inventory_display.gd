@@ -1,12 +1,14 @@
 extends GridContainer
 
 var num_slots: int
-var inventory = preload("res://inventory/inventory.tres")
+var Inventory = preload("res://inventory/inventory.tscn")
 var InventorySlotDisplay = preload("res://inventory/inventory_slot_display.tscn")
 var battle_scene = preload("res://battle.tscn")
 var can_be_dropped = true
 var mouse_exited_window = false
 var mouse_exited_grid_area = false 
+
+@onready var inventory = Inventory.instantiate()
 
 func _ready():
 	self.columns = GS.INVENTORY_COLS
@@ -22,6 +24,7 @@ func _ready():
 
 	for i in range(num_slots):
 		var isd = InventorySlotDisplay.instantiate()
+		isd.inventory = inventory
 		isd.can_be_dropped_signal.connect(
 				func(b): can_be_dropped = b)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
@@ -80,7 +83,11 @@ func _on_change_scene_button_pressed():
 	new_scene.previous_scene = old_scene
 	var current_inventory = inventory.get_fish_parts()
 	print("inventory right before switching to battle scene %s" % [current_inventory])
-	new_scene.inventory = current_inventory.duplicate()
+	new_scene.player_inventory = current_inventory.duplicate()
+	
+	var enemy_inventory = Inventory.instantiate()
+	enemy_inventory.add_to_inventory()
+	new_scene.enemy_inventory = enemy_inventory.get_fish_parts()
 	get_tree().root.add_child(new_scene)
 	self.visible = false
 

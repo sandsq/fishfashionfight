@@ -3,6 +3,8 @@ class_name Character
 
 @export var flipped: bool = false
 
+var inventory = null
+
 @onready var character_sprite = $Sprite2D
 @onready var character_stats = $CharacterStats
 @onready var weapon = $Weapon
