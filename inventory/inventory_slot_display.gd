@@ -25,8 +25,8 @@ func _get_drag_data(_position):
 		print("absolute indexes when getting drag data %s" % [absolute_indexes])
 		
 		data.fish = fish
-		data.fish_part_absolute_indexes = absolute_indexes
-		data.fish_part_relative_indexes = relative_indexes
+		data.fish_absolute_indexes = absolute_indexes
+		data.fish_relative_indexes = relative_indexes
 		
 		var drag_preview = TextureRect.new()
 		drag_preview.texture = fish.texture
@@ -35,13 +35,28 @@ func _get_drag_data(_position):
 	return data
 
 func _can_drop_data(_position, data):
-	return data is Dictionary and data.has("fish")
+	if data is Dictionary and data.has("fish"):
+		var my_fish_part_index = get_index()
+		
+		var fish_to_drop = data.fish
+		var fish_to_drop_abs_inds = data.fish_absolute_indexes
+		var fish_to_drop_rel_inds = data.fish_relative_indexes
+		
+		var new_abs_inds = fish_to_drop_rel_inds.map(
+				func(i): return i + my_fish_part_index)
+		print("calculating if these indexes can be dropped %s" % [new_abs_inds])
+		for ind in new_abs_inds:
+			if ind >= GS.INVENTORY_SIZE:
+				return false
+		return true
+	else:
+		return false
 	
 func _drop_data(_position, data):
 	var my_fish_part_index = get_index()
 	var my_fish_part = inventory.fish_parts[my_fish_part_index]
 	
-	var relative_indexes_to_be_dropped = data.fish_part_relative_indexes
+	var relative_indexes_to_be_dropped = data.fish_relative_indexes
 	var fish_to_be_dropped = data.fish
 	var fish_parts_to_be_dropped = fish_to_be_dropped.make_fish_parts()
 	

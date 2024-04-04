@@ -13,6 +13,7 @@ signal fishes_changed(indexes) ## array of positions that changed
 
 var ufishtest = preload("res://fish/ufish.tres")
 var onebytwofish = preload("res://fish/onebytwofish.tres")
+var twobyonefish = preload("res://fish/twobyonefish.tres")
 var drag_data = null
 
 	
@@ -26,22 +27,31 @@ func add_to_inventory():
 		fish_parts[part_ind] = ufish_parts[current_ind]
 		current_ind += 1
 	
-	#var fish1 = onebytwofish
-	#var fish2 = onebytwofish.duplicate()
-	#var arr: Array[int] = []
-	#arr.append(3)
-	#arr.append(4)
-	#var arr2: Array[int] = []
-	#arr2.append(15)
-	#arr2.append(16)
-	#fish1.set_absolute_arrangement_indexes(arr)
-	#fish2.set_absolute_arrangement_indexes(arr2)
-	#var fish_parts1x2 = fish1.make_fish_parts()
-	#var fish_parts1x2_2 = fish2.make_fish_parts()
-	#fish_parts[3] = fish_parts1x2[0]
-	#fish_parts[4] = fish_parts1x2[1]
-	#fish_parts[15] = fish_parts1x2_2[0]
-	#fish_parts[16] = fish_parts1x2_2[1]
+	var fish1 = onebytwofish
+	var fish2 = onebytwofish.duplicate()
+	var arr: Array[int] = []
+	arr.append(3)
+	arr.append(4)
+	var arr2: Array[int] = []
+	arr2.append(15)
+	arr2.append(16)
+	fish1.set_absolute_arrangement_indexes(arr)
+	fish2.set_absolute_arrangement_indexes(arr2)
+	var fish_parts1x2 = fish1.make_fish_parts()
+	var fish_parts1x2_2 = fish2.make_fish_parts()
+	fish_parts[3] = fish_parts1x2[0]
+	fish_parts[4] = fish_parts1x2[1]
+	fish_parts[15] = fish_parts1x2_2[0]
+	fish_parts[16] = fish_parts1x2_2[1]
+	
+	var fish3 = twobyonefish
+	var arr3: Array[int] = [8, 13]
+	fish3.set_absolute_arrangement_indexes(arr3)
+	var fish_parts3 = fish3.make_fish_parts()
+	fish_parts[8] = fish_parts3[0]
+	fish_parts[13] = fish_parts3[1]
+	
+	
 		
 	
 func get_fish_part_at_index(i):
