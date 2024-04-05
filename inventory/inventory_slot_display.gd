@@ -12,6 +12,7 @@ var update_counter = 0
 var empty_indicator = preload("res://assets/empty_indicator.png")
 var Synergy = preload("res://synergy.tscn")
 var provided_synergies = [null, null, null, null]
+var hl_shader = preload("res://inventory/edge_highlight.gdshader")
 
 #@onready var inventory = 
 @onready var fish_part_texture_rect = $FishPartTextureRect
@@ -60,6 +61,11 @@ func display_fish_part(fish_part):
 								Vector2(center_pos-visual_offset, center_pos))
 					self.add_child(indicator)
 		fish_part_texture_rect.texture = fish_part.texture
+		var testregion = fish_part_texture_rect.texture.region
+		print("atlas region, for use in shader, pos %s, size %s" % [testregion.position, testregion.size])
+		fish_part_texture_rect.material.shader = hl_shader
+		fish_part_texture_rect.material.set_shader_parameter("edge", Plane(1, 1, 1, 1))
+		fish_part_texture_rect.material.set_shader_parameter("atlas_pos", testregion.position)
 		associated_fish_part = fish_part
 		synergy_detector_shape.disabled = false
 		for i in associated_fish_part.adjacent_synergies_to_provide.size():
@@ -72,31 +78,46 @@ func display_fish_part(fish_part):
 				#print("synergy data %s" % synergy.synergy_data)
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()
+				#var indicator = ColorRect.new()
+				#indicator.color = Color(1.0, 0, 0, 0.5)
 				#print("synergy %s, synergy shape %s" 
 						#% [synergy, synergy_shape])
 				var center = Vector2(GS.GRID_SIZE / 2.0, GS.GRID_SIZE / 2.0)
 				var offset = 18
+				var horz_shape = Vector2(16, 4)
+				var vert_shape = Vector2(4, 16)
 				if i == 0:
-					synergy_shape.size = Vector2(16, 4)
+					synergy_shape.size = horz_shape
+					#indicator.custom_minimum_size = horz_shape
 					synergy.set_position(center + Vector2(0, -offset))
+					#indicator.set_position(center + Vector2(0, -offset))
 				elif i == 1:
-					synergy_shape.size = Vector2(4, 16)
+					synergy_shape.size = vert_shape
+					#indicator.custom_minimum_size = vert_shape
 					synergy.set_position(center + Vector2(offset, 0))
+					#indicator.set_position(center + Vector2(offset, 0))
 				elif i == 2:
-					synergy_shape.size = Vector2(16, 4)
+					#indicator.custom_minimum_size = horz_shape
+					#indicator.scale = Vector2(1, 0.5)
 					synergy.set_position(center + Vector2(0, offset))
+					#indicator.set_position(center + Vector2(0, offset))
 				elif i == 3:
-					synergy_shape.size = Vector2(4, 16)
+					synergy_shape.size = vert_shape
+					#indicator.custom_minimum_size = vert_shape
 					synergy.set_position(center + Vector2(-offset, 0))
+					#indicator.set_position(center + Vector2(-offset, 0))
 				
 				synergy_collision_shape.shape = synergy_shape
 				synergy.add_child(synergy_collision_shape)
+				#self.add_child(indicator)
 				provided_synergies[i] = synergy
 				add_child(synergy)
 				
 	else:
 		fish_part_texture_rect.texture = load(
 				"res://assets/inventory_placeholder.png")
+		fish_part_texture_rect.material.shader = hl_shader
+		fish_part_texture_rect.material.set_shader_parameter("edge", Plane(0, 0, 0, 0))
 		synergy_detector_shape.disabled = true
 		for i in range(4):
 			var provided_synergy = provided_synergies[i]
