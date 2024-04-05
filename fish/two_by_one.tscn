@@ -6,3 +6,4 @@
 [node name="TwoByOne" instance=ExtResource("1_l40au")]
 texture = ExtResource("2_d275w")
 arrangement = Array[Vector2]([Vector2(0, 0), Vector2(0, 1)])
+species = "two_by_one"

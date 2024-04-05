@@ -3,6 +3,8 @@ class_name Entity
 
 @export var texture: Texture
 @export var arrangement: Array[Vector2] ## specifies fish shape with 2d indexes
+@export var base_damage = 1
+@export var species = "fish"
 
 var absolute_arrangement_indexes: Array[int] ## specifies fish shape with 1d indexes, the indexes are the absolute positions in the grid
 var fish_parts: Array[FishPart]
@@ -21,6 +23,7 @@ func make_fish_parts() -> Array[FishPart]:
 			var fish_part = FishPart.new()
 			fish_part.set_texture(atlas_texture)
 			fish_part.set_parent_fish(self)
+			fish_part.damage = base_damage
 			fish_parts.append(fish_part)
 		
 		# inefficient but should be fine for sizes we are dealing with

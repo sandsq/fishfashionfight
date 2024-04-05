@@ -55,11 +55,11 @@ func _on_hurtbox_area_entered(area):
 	
 
 
-func _on_character_stats_health_changed(new_health):
+func _on_character_stats_health_changed(_new_health):
 	hp_label.text = "%s / %s" % [character_stats.current_health, character_stats.max_health]
 
 
-func _on_character_stats_max_health_changed(new_max_health):
+func _on_character_stats_max_health_changed(_new_max_health):
 	pass # Replace with function body.
 
 

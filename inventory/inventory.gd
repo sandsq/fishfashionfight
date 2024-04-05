@@ -1,5 +1,4 @@
 extends Node2D
-class_name Inventory
 
 signal fishes_changed(indexes) ## array of positions that changed
 
@@ -25,8 +24,19 @@ func add_to_inventory():
 	print("adding ufish parts %s at abs inds %s" % [ufish_parts, ufish_parts_abs_inds])
 	var current_ind = 0
 	for part_ind in ufish_parts_abs_inds:
-		print("adding the %s th ufish part to inventory slot %s" % [current_ind, part_ind])
-		fish_parts[part_ind] = ufish_parts[current_ind]
+		print("adding the %s th ufish part to inventory slot %s" 
+				% [current_ind, part_ind])
+		var ufish_part = ufish_parts[current_ind]
+		if current_ind == 5:
+			var testsynergy = Synergy.instantiate()
+			testsynergy.synergy_data = {"damage_boost": 8.0}
+			testsynergy.synergy_condition = func(test_val): 
+					if not test_val.has("species"):
+						return false
+					else:
+						return test_val.species == "two_by_one" 
+			ufish_part.set_adjacent_synergy_to_provide(testsynergy, 0)
+		fish_parts[part_ind] = ufish_part
 		current_ind += 1
 	
 	var fish1 = OneByTwo.instantiate()
@@ -54,9 +64,9 @@ func add_to_inventory():
 	fish4.set_absolute_arrangement_indexes(arr4)
 	var fish_parts4 = fish4.make_fish_parts()
 	var testpart = fish_parts4[0]
-	var testsynergy = Synergy.instantiate()
-	testsynergy.synergy_data = {"damage_boost": 2.0}
-	testpart.set_adjacent_synergy_to_provide(testsynergy, 2)
+	var testsynergy4 = Synergy.instantiate()
+	testsynergy4.synergy_data = {"damage_boost": 2.0}
+	testpart.set_adjacent_synergy_to_provide(testsynergy4, 2)
 	fish_parts[9] = testpart
 	
 		
@@ -89,5 +99,5 @@ func remove_fish_parts(indexes):
 	return previous_items
 	
 
-func _on_synergy_entered(area):
+func _on_synergy_entered(_area):
 	print("something entered synergy area")

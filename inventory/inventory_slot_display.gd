@@ -65,17 +65,16 @@ func display_fish_part(fish_part):
 		for i in associated_fish_part.adjacent_synergies_to_provide.size():
 			var synergy_to_provide = \
 						associated_fish_part.adjacent_synergies_to_provide[i]
-			print("synergy to provide %s, index %s" % [synergy_to_provide, i])
+			#print("synergy to provide %s, index %s" % [synergy_to_provide, i])
 			if synergy_to_provide != null:
-				var synergy = synergy_to_provide.duplicate()
+				var synergy = GS.clone_synergy(synergy_to_provide)
 				## duplicate doesn't duplicate variables
-				synergy.synergy_data = synergy_to_provide.synergy_data
-				print("synergy data %s" % synergy.synergy_data)
+				#print("synergy data %s" % synergy.synergy_data)
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()
 				#print("synergy %s, synergy shape %s" 
 						#% [synergy, synergy_shape])
-				var center = Vector2(GS.GRID_SIZE / 2, GS.GRID_SIZE / 2)
+				var center = Vector2(GS.GRID_SIZE / 2.0, GS.GRID_SIZE / 2.0)
 				var offset = 18
 				if i == 0:
 					synergy_shape.size = Vector2(16, 4)
@@ -203,9 +202,13 @@ func _drop_data(_position, data):
 		
 		
 func _on_synergy_detector_entered(area):
-	print("potential candidate for synergy, I am index %s, the identity of the area is %s" % [get_index(), area])
-	associated_fish_part.set_received_synergy_data(area.synergy_data)
 	
-func _on_synergy_detector_exited(area):
+	var fish = associated_fish_part.get_parent_fish()
+	var data = {"species": fish.species}
+	print("potential candidate for synergy, I am index %s, the identity of the area is %s, the data is %s" % [get_index(), area, data])
+	if area.synergy_condition.call(data):
+		associated_fish_part.set_received_synergy_data(area.synergy_data)
+	
+func _on_synergy_detector_exited(_area):
 	print("removing candidate for synergy, I am index %s" % [get_index()])
 	associated_fish_part.set_received_synergy_data({})

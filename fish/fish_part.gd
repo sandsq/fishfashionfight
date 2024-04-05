@@ -33,7 +33,7 @@ func set_received_synergy_data(new_received_synergy_data):
 	received_synergy_data = new_received_synergy_data
 	
 func process_received_synergy_data():
-	print("synergy data is %s" % received_synergy_data)
+	#print("synergy data is %s" % received_synergy_data)
 	if received_synergy_data.has("damage_boost"):
 		damage = damage * received_synergy_data.damage_boost
 
