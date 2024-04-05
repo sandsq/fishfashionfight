@@ -80,10 +80,17 @@ offset_bottom = 47.0
 text = "Return!"
 
 [node name="InfoLabel" type="Label" parent="."]
-offset_left = 216.0
-offset_top = 320.0
-offset_right = 256.0
-offset_bottom = 343.0
+offset_left = 8.0
+offset_top = 328.0
+offset_right = 48.0
+offset_bottom = 351.0
+text = "misc"
+
+[node name="EnemyInfoLabel" type="Label" parent="."]
+offset_left = 384.0
+offset_top = 336.0
+offset_right = 424.0
+offset_bottom = 359.0
 text = "misc"
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

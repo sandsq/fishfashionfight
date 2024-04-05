@@ -69,7 +69,7 @@ func add_to_inventory():
 	testpart.set_adjacent_synergy_to_provide(testsynergy4, 2)
 	var testsynergy42 = Synergy.instantiate()
 	testsynergy42.synergy_data = {"damage_boost": 3.0}
-	testpart.set_adjacent_synergy_to_provide(testsynergy42, 1)
+	testpart.set_adjacent_synergy_to_provide(testsynergy42, 0)
 	fish_parts[9] = testpart
 	
 	var fish5 = OneByOne.instantiate()
@@ -77,6 +77,12 @@ func add_to_inventory():
 	fish5.set_absolute_arrangement_indexes(arr5)
 	var fish_parts5 = fish5.make_fish_parts()
 	fish_parts[6] = fish_parts5[0]
+	
+	var fish6 = OneByOne.instantiate()
+	var arr6: Array[int] = [14]
+	fish6.set_absolute_arrangement_indexes(arr6)
+	var fish_parts6 = fish6.make_fish_parts()
+	fish_parts[14] = fish_parts6[0]
 	
 func get_fish_part_at_index(i):
 	return fish_parts[i]

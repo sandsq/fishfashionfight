@@ -286,8 +286,8 @@ func _on_synergy_detector_entered(area):
 		return
 	var fish = associated_fish_part.get_parent_fish()
 	var data = {"species": fish.species}
-	print("potential candidate for synergy, I am index %s, the identity of the area is %s, the data is %s" % [get_index(), area, data])
 	if area.synergy_condition.call(data):
+		print("potential candidate for synergy, I am index %s, the identity of the area is %s, the data is %s" % [get_index(), area, data])
 		set_colors_cascading(area.attached_to.fish_part_texture_rect, area.edge_info)
 		associated_fish_part.set_received_synergy_data(area.synergy_data, plane_to_index(area.edge_info))
 	
