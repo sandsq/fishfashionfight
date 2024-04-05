@@ -47,7 +47,7 @@ func attack(target_position, duration=0.4):
 func _on_hurtbox_area_entered(area):
 	var damage_taken = area.damage
 	character_stats.current_health -= damage_taken
-	print("character %s got hurt by something entering its hurtbox" % self.name)
+	#print("character %s got hurt by something entering its hurtbox" % self.name)
 	var damage_label = Label.new()
 	damage_label.text = "-%s" % damage_taken
 	damage_label.set_position(Vector2(32, 16))

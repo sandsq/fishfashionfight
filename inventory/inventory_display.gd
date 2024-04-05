@@ -82,11 +82,11 @@ func _on_change_scene_button_pressed():
 	var new_scene = battle_scene.instantiate()
 	new_scene.previous_scene = old_scene
 	var current_inventory = inventory.get_fish_parts()
-	for i in current_inventory.size():
-		if current_inventory[i] != null:
-			var fish_part = current_inventory[i]
-			fish_part.damage = 5
-			current_inventory[i] = fish_part
+	#for i in current_inventory.size():
+		#if current_inventory[i] != null:
+			#var fish_part = current_inventory[i]
+			#fish_part.damage = 5
+			#current_inventory[i] = fish_part
 	print("inventory right before switching to battle scene %s" 
 			% [current_inventory])
 	new_scene.player_fish_parts = current_inventory

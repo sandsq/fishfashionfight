@@ -54,7 +54,9 @@ func add_to_inventory():
 	fish4.set_absolute_arrangement_indexes(arr4)
 	var fish_parts4 = fish4.make_fish_parts()
 	var testpart = fish_parts4[0]
-	testpart.set_adjacent_synergy_to_provide({"damage_boost": 1.5}, 0)
+	var testsynergy = Synergy.instantiate()
+	testsynergy.synergy_data = {"damage_boost": 2.0}
+	testpart.set_adjacent_synergy_to_provide(testsynergy, 2)
 	fish_parts[9] = testpart
 	
 		

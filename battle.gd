@@ -54,6 +54,7 @@ func execute_actions(character, opponent, display, indicator):
 		indicator.global_position = \
 				display.get_child(current_fish_ind).global_position
 		if fish_part != null:
+			fish_part.process_received_synergy_data()
 			await character.draw_weapon(fish_part)
 			await character.attack(opponent.global_position + Vector2(50, 50))
 			character.weapon.texture = null
