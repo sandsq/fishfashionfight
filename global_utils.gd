@@ -16,3 +16,10 @@ static func index_to_grid(i: int) -> Vector2:
 	var xy = Vector2(floor(i / INVENTORY_COLS), i % INVENTORY_COLS)
 	#print("index %s on an %s x %s grid is position %s" % [i, INVENTORY_ROWS, INVENTORY_COLS, xy])
 	return xy
+
+
+func _ready():
+	if get_tree().current_scene.scene_file_path == "res://battle.tscn":
+		return
+	if get_tree().current_scene.scene_file_path != ProjectSettings.get_setting("application/run/main_scene"):
+		get_viewport().global_canvas_transform = get_viewport().global_canvas_transform.translated(Vector2(150, 200))

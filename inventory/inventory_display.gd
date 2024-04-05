@@ -49,7 +49,7 @@ func _on_fishes_changed(indexes):
 	#print("on fishes changed triggered for indexes %s" % [indexes])
 	for i in indexes:
 		update_inventory_slot_display(i)
-	print("telling inventory display that %s indexes changed, new inventory %s" % [indexes, inventory.get_fish_parts()])
+	#print("telling inventory display that %s indexes changed, new inventory %s" % [indexes, inventory.get_fish_parts()])
 		
 func _input(event):
 	if event.is_action_released("ui_left_click"):

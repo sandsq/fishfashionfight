@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdteeixpq1jeg"]
+[gd_scene load_steps=4 format=3 uid="uid://bdteeixpq1jeg"]
 
 [ext_resource type="Texture2D" uid="uid://dnfoes1um4js0" path="res://assets/inventory_placeholder.png" id="1_ke2kp"]
 [ext_resource type="Script" path="res://inventory/inventory_slot_display.gd" id="1_xjjg0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x03e8"]
+size = Vector2(30, 30)
 
 [node name="InventorySlotDisplay" type="CenterContainer"]
 offset_right = 32.0
@@ -13,3 +16,11 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 texture = ExtResource("1_ke2kp")
 stretch_mode = 3
+
+[node name="SynergyDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SynergyDetector"]
+position = Vector2(16, 16)
+shape = SubResource("RectangleShape2D_x03e8")

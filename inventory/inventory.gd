@@ -15,6 +15,7 @@ var UFish = preload("res://fish/u_fish.tscn")
 var OneByTwo = preload("res://fish/one_by_two.tscn")
 var TwoByOne = preload("res://fish/two_by_one.tscn")
 var OneByOne = preload("res://fish/one_by_one.tscn")
+var Synergy = preload("res://synergy.tscn")
 var drag_data = null
 	
 func add_to_inventory():
@@ -52,7 +53,9 @@ func add_to_inventory():
 	var arr4: Array[int] = [9]
 	fish4.set_absolute_arrangement_indexes(arr4)
 	var fish_parts4 = fish4.make_fish_parts()
-	fish_parts[9] = fish_parts4[0]
+	var testpart = fish_parts4[0]
+	testpart.set_adjacent_synergy_to_provide({"damage_boost": 1.5}, 0)
+	fish_parts[9] = testpart
 	
 		
 	
@@ -83,3 +86,6 @@ func remove_fish_parts(indexes):
 	emit_signal("fishes_changed", indexes)
 	return previous_items
 	
+
+func _on_synergy_entered(area):
+	print("something entered synergy area")

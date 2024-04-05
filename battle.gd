@@ -42,16 +42,17 @@ func _process(_delta):
 
 	if not executing_player_attacks:
 		executing_player_attacks = true
-		execute_attacks(player, enemy, inventory_display, inventory_display_highlighter)
+		execute_actions(player, enemy, inventory_display, inventory_display_highlighter)
 	if not executing_enemy_attacks:
 		executing_enemy_attacks = true
-		execute_attacks(enemy, player, enemy_inventory_display, enemy_inventory_display_highlighter)
+		execute_actions(enemy, player, enemy_inventory_display, enemy_inventory_display_highlighter)
 
 
-func execute_attacks(character, opponent, display, indicator):
+func execute_actions(character, opponent, display, indicator):
 	var current_fish_ind = 0
 	for fish_part in character.fish_part_weapons:
-		indicator.global_position = display.get_child(current_fish_ind).global_position
+		indicator.global_position = \
+				display.get_child(current_fish_ind).global_position
 		if fish_part != null:
 			await character.draw_weapon(fish_part)
 			await character.attack(opponent.global_position + Vector2(50, 50))

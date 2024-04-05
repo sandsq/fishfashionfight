@@ -10,9 +10,17 @@ var icon_preview: TextureRect
 var should_update_preview = false
 var update_counter = 0
 var empty_indicator = preload("res://assets/empty_indicator.png")
+var Synergy = preload("res://synergy.tscn")
+var provided_synergies = [null, null, null, null]
 
 #@onready var inventory = 
 @onready var fish_part_texture_rect = $FishPartTextureRect
+@onready var synergy_detector = $SynergyDetector
+@onready var synergy_detector_shape = $SynergyDetector/CollisionShape2D
+
+func _ready():
+	synergy_detector.area_entered.connect(_on_synergy_detector_entered)
+	synergy_detector.area_exited.connect(_on_synergy_detector_exited)
 
 func _process(_delta):
 	if should_update_preview:
@@ -24,7 +32,6 @@ func _process(_delta):
 
 func display_fish_part(fish_part):
 	if fish_part is FishPart:
-		
 		if display_debug_adjacents:
 			for i in fish_part.adjacent_parts.size():
 				var adjacent_part = fish_part.adjacent_parts[i]
@@ -54,9 +61,45 @@ func display_fish_part(fish_part):
 					self.add_child(indicator)
 		fish_part_texture_rect.texture = fish_part.texture
 		associated_fish_part = fish_part
-			
+		synergy_detector_shape.disabled = false
+		for i in associated_fish_part.adjacent_synergies_to_provide.size():
+			var synergy_to_provide = \
+						associated_fish_part.adjacent_synergies_to_provide[i]
+			#print("synergy to provide %s, index %s" % [synergy_to_provide, i])
+			if synergy_to_provide != null:
+				var synergy = Synergy.instantiate()
+				var synergy_collision_shape = CollisionShape2D.new()
+				var synergy_shape = RectangleShape2D.new()
+				#print("synergy %s, synergy shape %s" 
+						#% [synergy, synergy_shape])
+				var center = Vector2(GS.GRID_SIZE / 2, GS.GRID_SIZE / 2)
+				var offset = 18
+				if i == 0:
+					synergy_shape.size = Vector2(16, 4)
+					synergy.set_position(center + Vector2(0, -offset))
+				elif i == 1:
+					synergy_shape.size = Vector2(4, 16)
+					synergy.set_position(center + Vector2(offset, 0))
+				elif i == 2:
+					synergy_shape.size = Vector2(16, 4)
+					synergy.set_position(center + Vector2(0, offset))
+				elif i == 3:
+					synergy_shape.size = Vector2(4, 16)
+					synergy.set_position(center + Vector2(-offset, 0))
+				
+				synergy_collision_shape.shape = synergy_shape
+				synergy.add_child(synergy_collision_shape)
+				provided_synergies[i] = synergy
+				add_child(synergy)
+				
 	else:
-		fish_part_texture_rect.texture = load("res://assets/inventory_placeholder.png")
+		fish_part_texture_rect.texture = load(
+				"res://assets/inventory_placeholder.png")
+		synergy_detector_shape.disabled = true
+		for i in range(4):
+			var provided_synergy = provided_synergies[i]
+			if provided_synergy != null:
+				remove_child(provided_synergy)
 
 
 func _get_drag_data(_position):
@@ -151,8 +194,13 @@ func _drop_data(_position, data):
 	inventory.set_fish_parts(
 			new_absolute_indexes_to_be_dropped, fish_parts_to_be_dropped)
 	
-	print("after dropping, new inventory %s" % [inventory.get_fish_parts()])
+	#print("after dropping, new inventory %s" % [inventory.get_fish_parts()])
 	
 	inventory.drag_data = null
 		
 		
+func _on_synergy_detector_entered(area):
+	print("potential candidate for synergy, I am index %s, the identity of the area is %s" % [get_index(), area])
+	
+func _on_synergy_detector_exited(area):
+	print("removing candidate for synergy")
