@@ -1,5 +1,7 @@
 extends GridContainer
 
+signal received_hover_signal_from_slot(data)
+
 var num_slots: int
 var Inventory = preload("res://inventory/inventory.tscn")
 var InventorySlotDisplay = preload("res://inventory/inventory_slot_display.tscn")
@@ -27,6 +29,7 @@ func _ready():
 		isd.inventory = inventory
 		isd.can_be_dropped_signal.connect(
 				func(b): can_be_dropped = b)
+		isd.mouse_hovered_over_synergy.connect(_on_received_hover_signal_from_slot)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
 		add_child(isd)
 	inventory.add_to_inventory()
@@ -76,6 +79,9 @@ func _notification(what):
 	elif what == NOTIFICATION_WM_MOUSE_ENTER:
 		#print("inventory display, mouse entered window")
 		mouse_exited_window = false
+		
+func _on_received_hover_signal_from_slot(data):
+	emit_signal("received_hover_signal_from_slot", data)
 
 
 

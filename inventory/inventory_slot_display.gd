@@ -1,6 +1,7 @@
 extends CenterContainer
 
 signal can_be_dropped_signal
+signal mouse_hovered_over_synergy(data)
 
 @export var display_debug_adjacents = false
 
@@ -299,4 +300,5 @@ func _on_synergy_detector_exited(area):
 	associated_fish_part.set_received_synergy_data({}, plane_to_index(area.edge_info))
 
 func _on_mouse_entered_synergy_zone(synergy_data):
-	print("show tooltip here %s" % [synergy_data])
+	#print("show tooltip here %s" % [synergy_data])
+	emit_signal("mouse_hovered_over_synergy", synergy_data)

@@ -5,7 +5,10 @@ var InventoryDisplay = preload("res://inventory/inventory_display.tscn")
 var Inventory = preload("res://inventory/inventory.tscn")
 
 @onready var player_display = $CenterContainer/ActiveInventoryDisplay
+@onready var info_label = %InfoLabel
 
+func _ready():
+	player_display.received_hover_signal_from_slot.connect(_change_info)
 
 func _on_change_scene_button_pressed():
 	var old_scene = player_display
@@ -26,3 +29,6 @@ func _on_change_scene_button_pressed():
 	get_tree().root.add_child(new_scene)
 	
 	old_scene.visible = false
+
+func _change_info(data):
+	info_label.text = str(data)
