@@ -6,7 +6,8 @@ static var INVENTORY_ROWS = 5
 static var INVENTORY_COLS = 5
 static var INVENTORY_SIZE = INVENTORY_ROWS * INVENTORY_COLS
 static var Synergy = preload("res://synergy.tscn")
-
+static var inactive_synergy_color = Plane(0.5, 0.5, 0.5, 0.5)
+static var active_synergy_color = Plane(0.2, 0.8, 0.6, 0.5)
 
 static func grid_to_index(grid_pos: Vector2) -> int:
 	var i = grid_pos.y * INVENTORY_ROWS + grid_pos.x

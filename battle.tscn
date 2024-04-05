@@ -79,6 +79,13 @@ offset_right = 618.0
 offset_bottom = 47.0
 text = "Return!"
 
+[node name="InfoLabel" type="Label" parent="."]
+offset_left = 216.0
+offset_top = 320.0
+offset_right = 256.0
+offset_bottom = 343.0
+text = "misc"
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 
 [editable path="Enemy"]

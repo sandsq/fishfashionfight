@@ -7,7 +7,8 @@ var parent_fish: Entity
 var texture: Texture
 var adjacent_parts: Array = [null, null, null, null] ## north east south west
 var adjacent_synergies_to_provide: Array = [null, null, null, null]
-var received_synergy_data = {}
+## if something is in index 0, the fish giving it that synergy gave it from the north
+var received_synergy_data = [{}, {}, {}, {}] 
 
 
 func perform_fish_part_action():
@@ -28,14 +29,16 @@ func set_texture(new_texture):
 func clear_received_synergy_data():
 	received_synergy_data = {}
 
-func set_received_synergy_data(new_received_synergy_data):
-	print("updated synergy data with %s" % new_received_synergy_data)
-	received_synergy_data = new_received_synergy_data
+func set_received_synergy_data(new_received_synergy_data, i):
+	print("updated synergy data with %s at %s" % [new_received_synergy_data, i])
+	received_synergy_data[i] = new_received_synergy_data
 	
 func process_received_synergy_data():
 	#print("synergy data is %s" % received_synergy_data)
-	if received_synergy_data.has("damage_boost"):
-		damage = damage * received_synergy_data.damage_boost
+	for single_synergy_data in received_synergy_data:
+		if single_synergy_data.has("damage_boost"):
+			damage = damage * single_synergy_data.damage_boost
+	return received_synergy_data
 
 func set_adjacent_synergy_to_provide(data, ind):
 	if adjacent_parts[ind] != null:

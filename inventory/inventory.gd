@@ -29,7 +29,7 @@ func add_to_inventory():
 		var ufish_part = ufish_parts[current_ind]
 		if current_ind == 5:
 			var testsynergy = Synergy.instantiate()
-			testsynergy.synergy_data = {"damage_boost": 8.0}
+			testsynergy.synergy_data = {"damage_boost": 8.0, "notes": "Only grants bonus to 2x1 fish."}
 			testsynergy.synergy_condition = func(test_val): 
 					if not test_val.has("species"):
 						return false
@@ -67,9 +67,16 @@ func add_to_inventory():
 	var testsynergy4 = Synergy.instantiate()
 	testsynergy4.synergy_data = {"damage_boost": 2.0}
 	testpart.set_adjacent_synergy_to_provide(testsynergy4, 2)
+	var testsynergy42 = Synergy.instantiate()
+	testsynergy42.synergy_data = {"damage_boost": 3.0}
+	testpart.set_adjacent_synergy_to_provide(testsynergy42, 1)
 	fish_parts[9] = testpart
 	
-		
+	var fish5 = OneByOne.instantiate()
+	var arr5: Array[int] = [6]
+	fish5.set_absolute_arrangement_indexes(arr5)
+	var fish_parts5 = fish5.make_fish_parts()
+	fish_parts[6] = fish_parts5[0]
 	
 func get_fish_part_at_index(i):
 	return fish_parts[i]

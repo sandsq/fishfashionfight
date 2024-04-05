@@ -14,6 +14,7 @@ var enemy_inventory_display_highlighter = null
 @onready var enemy_inventory_display = $EnemyInventoryDisplay
 @onready var player = $Player
 @onready var enemy = $Enemy
+@onready var info_label = $InfoLabel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -54,15 +55,21 @@ func execute_actions(character, opponent, display, indicator):
 		indicator.global_position = \
 				display.get_child(current_fish_ind).global_position
 		if fish_part != null:
-			fish_part.process_received_synergy_data()
+			var synergies_activated = fish_part.process_received_synergy_data()
+			for s in synergies_activated:
+				if s != {}:
+					info_label.text += str(s)
+					
 			await character.draw_weapon(fish_part)
 			await character.attack(opponent.global_position + Vector2(50, 50))
 			character.weapon.texture = null
 		else:
 			character.weapon.texture = null
+			info_label.text = ""
 		await get_tree().create_timer(
 				character.character_stats.attack_speed).timeout
 		current_fish_ind += 1
+	
 		
 
 

@@ -13,6 +13,7 @@ var empty_indicator = preload("res://assets/empty_indicator.png")
 var Synergy = preload("res://synergy.tscn")
 var provided_synergies = [null, null, null, null]
 var hl_shader = preload("res://inventory/edge_highlight.gdshader")
+var shader_edges = Plane(0, 0, 0, 0)
 
 #@onready var inventory = 
 @onready var fish_part_texture_rect = $FishPartTextureRect
@@ -22,6 +23,7 @@ var hl_shader = preload("res://inventory/edge_highlight.gdshader")
 func _ready():
 	synergy_detector.area_entered.connect(_on_synergy_detector_entered)
 	synergy_detector.area_exited.connect(_on_synergy_detector_exited)
+	
 
 func _process(_delta):
 	if should_update_preview:
@@ -61,56 +63,69 @@ func display_fish_part(fish_part):
 								Vector2(center_pos-visual_offset, center_pos))
 					self.add_child(indicator)
 		fish_part_texture_rect.texture = fish_part.texture
-		var testregion = fish_part_texture_rect.texture.region
-		print("atlas region, for use in shader, pos %s, size %s" % [testregion.position, testregion.size])
-		fish_part_texture_rect.material.shader = hl_shader
-		fish_part_texture_rect.material.set_shader_parameter("edge", Plane(1, 1, 1, 1))
-		fish_part_texture_rect.material.set_shader_parameter("atlas_pos", testregion.position)
+		
 		associated_fish_part = fish_part
 		synergy_detector_shape.disabled = false
 		for i in associated_fish_part.adjacent_synergies_to_provide.size():
+			#print("shader edges %s, for %s" % [shader_edges, get_index()])
 			var synergy_to_provide = \
 						associated_fish_part.adjacent_synergies_to_provide[i]
 			#print("synergy to provide %s, index %s" % [synergy_to_provide, i])
 			if synergy_to_provide != null:
-				var synergy = GS.clone_synergy(synergy_to_provide)
 				## duplicate doesn't duplicate variables
-				#print("synergy data %s" % synergy.synergy_data)
+				var synergy = GS.clone_synergy(synergy_to_provide)
+				synergy.mouse_entered.connect(_on_mouse_entered_synergy_zone
+						.bind(synergy.synergy_data))
+				synergy.attached_to = self 
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()
-				#var indicator = ColorRect.new()
-				#indicator.color = Color(1.0, 0, 0, 0.5)
-				#print("synergy %s, synergy shape %s" 
-						#% [synergy, synergy_shape])
+				#print("synergy %s, synergy shape %s, data" 
+						#% [synergy, synergy_shape, synergy.synergy_data])
 				var center = Vector2(GS.GRID_SIZE / 2.0, GS.GRID_SIZE / 2.0)
-				var offset = 18
-				var horz_shape = Vector2(16, 4)
-				var vert_shape = Vector2(4, 16)
+				var offset = 12
+				var horz_shape = Vector2(16, 12)
+				var vert_shape = Vector2(12, 16)
+				var texture_region = fish_part_texture_rect.texture.region
+				var inactive_colors: Array[Plane] = [GS.inactive_synergy_color, GS.inactive_synergy_color, GS.inactive_synergy_color, GS.inactive_synergy_color]
+				print("atlas region, for use in shader, pos %s, size %s" 
+						% [texture_region.position, texture_region.size])
+				var single_edge_info = Plane() # if a move happened that only activates one synergy, only show that synergy
 				if i == 0:
 					synergy_shape.size = horz_shape
-					#indicator.custom_minimum_size = horz_shape
 					synergy.set_position(center + Vector2(0, -offset))
-					#indicator.set_position(center + Vector2(0, -offset))
+					single_edge_info = Plane(1, 0, 0, 0)
+					shader_edges = Plane(shader_edges.x + 1, shader_edges.y, shader_edges.z, shader_edges.d) # ensure all edges of a fish get indicated
+					create_shader(fish_part_texture_rect, shader_edges, 
+							inactive_colors, texture_region.position)
 				elif i == 1:
 					synergy_shape.size = vert_shape
-					#indicator.custom_minimum_size = vert_shape
 					synergy.set_position(center + Vector2(offset, 0))
-					#indicator.set_position(center + Vector2(offset, 0))
+					shader_edges = Plane(shader_edges.x, shader_edges.y + 1, shader_edges.z, shader_edges.d)
+					single_edge_info = Plane(0, 1, 0, 0)
+					create_shader(fish_part_texture_rect, shader_edges, 
+							inactive_colors, texture_region.position)
 				elif i == 2:
-					#indicator.custom_minimum_size = horz_shape
-					#indicator.scale = Vector2(1, 0.5)
+					single_edge_info = Plane(0, 0, 1, 0)
+					synergy_shape.size = horz_shape
 					synergy.set_position(center + Vector2(0, offset))
-					#indicator.set_position(center + Vector2(0, offset))
+					shader_edges = Plane(shader_edges.x, shader_edges.y, shader_edges.z + 1, shader_edges.d)
+					create_shader(fish_part_texture_rect, shader_edges, 
+							inactive_colors, texture_region.position)
 				elif i == 3:
 					synergy_shape.size = vert_shape
-					#indicator.custom_minimum_size = vert_shape
 					synergy.set_position(center + Vector2(-offset, 0))
-					#indicator.set_position(center + Vector2(-offset, 0))
+					single_edge_info = Plane(0, 0, 0, 1)
+					shader_edges = Plane(shader_edges.x, shader_edges.y, shader_edges.z, shader_edges.d + 1)
+					create_shader(fish_part_texture_rect, shader_edges, 
+							inactive_colors, texture_region.position)
 				
 				synergy_collision_shape.shape = synergy_shape
+				#synergy.area_entered.connect(_on_synergy_hitbox_hit_something)
+				#synergy.area_exited.connect(_on_synergy_hitbox_left_something)
 				synergy.add_child(synergy_collision_shape)
 				#self.add_child(indicator)
 				provided_synergies[i] = synergy
+				synergy.edge_info = single_edge_info
 				add_child(synergy)
 				
 	else:
@@ -123,8 +138,41 @@ func display_fish_part(fish_part):
 			var provided_synergy = provided_synergies[i]
 			if provided_synergy != null:
 				remove_child(provided_synergy)
+				provided_synergy.queue_free()
 
+func create_shader(obj, edge: Plane, colors: Array[Plane], atlas_position: Vector2):
+	obj.material.shader = hl_shader
+	obj.material.set_shader_parameter("edge", edge)
+	obj.material.set_shader_parameter("top_hl_color", colors[0])
+	obj.material.set_shader_parameter("right_hl_color", colors[1])
+	obj.material.set_shader_parameter("bottom_hl_color", colors[2])
+	obj.material.set_shader_parameter("left_hl_color", colors[3])
+	obj.material.set_shader_parameter("atlas_pos", atlas_position)
 
+func set_colors_cascading(obj, edge: Plane, color=GS.active_synergy_color):
+	
+	if edge.x >= 0.99: # top flag
+		print("setting top color %s" % color)
+		obj.material.set_shader_parameter("top_hl_color", color)
+	#else:
+		#obj.material.set_shader_parameter("top_hl_color", GS.inactive_synergy_color)
+	if edge.y >= 0.99: # right flag
+		print("setting right color %s" % color)
+		obj.material.set_shader_parameter("right_hl_color", color)
+	#else:
+		#obj.material.set_shader_parameter("right_hl_color", GS.inactive_synergy_color)
+	if edge.z >= 0.99: # bottom flag
+		print("setting bottom color %s" % color)
+		obj.material.set_shader_parameter("bottom_hl_color", color)
+	#else:
+		#obj.material.set_shader_parameter("bottom_hl_color", GS.inactive_synergy_color)
+	if edge.d >= 0.99: # left flag
+		print("setting left color %s" % color)
+		obj.material.set_shader_parameter("left_hl_color", color)
+	#else:
+		#obj.material.set_shader_parameter("left_hl_color", GS.inactive_synergy_color)
+
+		
 func _get_drag_data(_position):
 	var fish_part_index = get_index()
 	print("drag data index of fish part %s" % fish_part_index)
@@ -139,14 +187,15 @@ func _get_drag_data(_position):
 		print("absolute indexes when getting drag data %s" % [absolute_indexes])
 		inventory.remove_fish_parts(absolute_indexes)
 		
+		var drag_preview = Control.new()
 		
 		icon_preview = TextureRect.new()
 		icon_preview.texture = fish.texture
 		icon_preview.visible = false
-		#icon_preview.mouse_filter = MOUSE_FILTER_PASS
-		var drag_preview = Control.new() # TextureRect.new()
+		icon_preview.material = ShaderMaterial.new()
+		#create_shader(icon_preview, Plane(1, 1, 1, 1), Plane(1.0, 0.5, 0.4, 0.5), Vector2.ZERO)
 		drag_preview.add_child(icon_preview)
-		#drag_preview.mouse_filter = MOUSE_FILTER_PASS
+	
 		should_update_preview = true
 		set_drag_preview(drag_preview)
 		
@@ -220,16 +269,34 @@ func _drop_data(_position, data):
 	#print("after dropping, new inventory %s" % [inventory.get_fish_parts()])
 	
 	inventory.drag_data = null
-		
+
+func plane_to_index(p: Plane):
+	if p.x >= 0.99:
+		return 0
+	if p.y >= 0.99:
+		return 1
+	if p.z >= 0.99:
+		return 2
+	if p.d >= 0.99:
+		return 3
 		
 func _on_synergy_detector_entered(area):
-	
+	if area.attached_to == self:
+		print("intersecting with self, don't do anything")
+		return
 	var fish = associated_fish_part.get_parent_fish()
 	var data = {"species": fish.species}
 	print("potential candidate for synergy, I am index %s, the identity of the area is %s, the data is %s" % [get_index(), area, data])
 	if area.synergy_condition.call(data):
-		associated_fish_part.set_received_synergy_data(area.synergy_data)
+		set_colors_cascading(area.attached_to.fish_part_texture_rect, area.edge_info)
+		associated_fish_part.set_received_synergy_data(area.synergy_data, plane_to_index(area.edge_info))
 	
-func _on_synergy_detector_exited(_area):
+func _on_synergy_detector_exited(area):
 	print("removing candidate for synergy, I am index %s" % [get_index()])
-	associated_fish_part.set_received_synergy_data({})
+	for s in associated_fish_part.received_synergy_data:
+		print(area.edge_info)
+	set_colors_cascading(area.attached_to.fish_part_texture_rect, area.edge_info, GS.inactive_synergy_color)
+	associated_fish_part.set_received_synergy_data({}, plane_to_index(area.edge_info))
+
+func _on_mouse_entered_synergy_zone(synergy_data):
+	print("show tooltip here %s" % [synergy_data])
