@@ -3,7 +3,7 @@ class_name Character
 
 @export var flipped: bool = false
 
-var inventory = null
+var fish_part_weapons = null
 
 @onready var character_sprite = $Sprite2D
 @onready var character_stats = $CharacterStats
@@ -23,10 +23,11 @@ func _process(_delta):
 			print("dummy attack for testing purposes")
 			attack(Vector2(290, 150))
 
-func draw_weapon(weapon_texture, duration=0.25):
+func draw_weapon(fish_part, duration=0.25):
+	weapon.set_weapon_damage(fish_part.damage)
 	weapon.set_position(Vector2(16, 32))
 	await get_tree().create_timer(duration).timeout
-	weapon.texture = weapon_texture
+	weapon.texture = fish_part.get_parent_fish().texture
 	var tween = create_tween()
 	tween.tween_property(weapon, "position", Vector2(56, 0), duration)
 	tween.play()

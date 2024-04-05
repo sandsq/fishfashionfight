@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bibg3h6b8787w"]
+[gd_scene load_steps=11 format=3 uid="uid://bibg3h6b8787w"]
 
 [ext_resource type="Texture2D" uid="uid://buk7p18ney78g" path="res://assets/character.png" id="1_de2i3"]
 [ext_resource type="Script" path="res://character.gd" id="1_grc1o"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://ew64v7v1l0j5" path="res://hurtbox.tscn" id="3_h7cqb"]
 [ext_resource type="Texture2D" uid="uid://cxmpyu348lk16" path="res://assets/generic1x1.png" id="4_7hn0p"]
 [ext_resource type="Script" path="res://weapon_hitbox.gd" id="5_e4wfj"]
+[ext_resource type="Script" path="res://weapon.gd" id="5_ua6m2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7l6t0"]
 resource_local_to_scene = true
@@ -29,6 +30,7 @@ offset = Vector2(32, 32)
 
 [node name="Weapon" type="Sprite2D" parent="."]
 texture = ExtResource("4_7hn0p")
+script = ExtResource("5_ua6m2")
 metadata/_edit_group_ = true
 
 [node name="WeaponHitbox" type="Area2D" parent="Weapon"]

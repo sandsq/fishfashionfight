@@ -1,7 +1,6 @@
-extends Resource
+extends Node2D
 class_name Entity
 
-@export var name: String = ""
 @export var texture: Texture
 @export var arrangement: Array[Vector2] ## specifies fish shape with 2d indexes
 

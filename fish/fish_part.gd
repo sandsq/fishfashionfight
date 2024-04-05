@@ -1,9 +1,11 @@
-extends Resource
+extends Node2D
 class_name FishPart
+
+@export var damage: int = 1
 
 var parent_fish: Entity
 var texture: Texture
-var position: Vector2
+
 
 func get_parent_fish() -> Entity:
 	return parent_fish
@@ -17,9 +19,3 @@ func get_texture():
 	
 func set_texture(new_texture):
 	texture = new_texture
-
-func get_position():
-	return position
-	
-func set_position(new_position):
-	position = new_position

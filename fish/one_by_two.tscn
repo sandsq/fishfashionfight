@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://yesdxx6waraa"]
+
+[ext_resource type="PackedScene" uid="uid://cvr1n8cvupkm8" path="res://fish/entity.tscn" id="1_dl3cp"]
+[ext_resource type="Texture2D" uid="uid://i4k3k3764m4y" path="res://assets/generic1x2.png" id="2_gkbsf"]
+
+[node name="OneByTwo" instance=ExtResource("1_dl3cp")]
+texture = ExtResource("2_gkbsf")
+arrangement = Array[Vector2]([Vector2(0, 0), Vector2(1, 0)])

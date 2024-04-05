@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://egfyubhia0bm"]
+
+[ext_resource type="PackedScene" uid="uid://cvr1n8cvupkm8" path="res://fish/entity.tscn" id="1_kycl7"]
+[ext_resource type="Texture2D" uid="uid://wk620pheljpr" path="res://assets/ufish.png" id="2_yjgb6"]
+
+[node name="UFish" instance=ExtResource("1_kycl7")]
+texture = ExtResource("2_yjgb6")
+arrangement = Array[Vector2]([Vector2(0, 0), Vector2(2, 0), Vector2(0, 1), Vector2(2, 1), Vector2(0, 2), Vector2(1, 2), Vector2(2, 2)])
