@@ -2,11 +2,14 @@ extends CenterContainer
 
 signal can_be_dropped_signal
 
+@export var display_debug_adjacents = false
+
 var inventory = null
 var associated_fish_part: FishPart
 var icon_preview: TextureRect
 var should_update_preview = false
 var update_counter = 0
+var empty_indicator = preload("res://assets/empty_indicator.png")
 
 #@onready var inventory = 
 @onready var fish_part_texture_rect = $FishPartTextureRect
@@ -21,8 +24,37 @@ func _process(_delta):
 
 func display_fish_part(fish_part):
 	if fish_part is FishPart:
+		
+		if display_debug_adjacents:
+			for i in fish_part.adjacent_parts.size():
+				var adjacent_part = fish_part.adjacent_parts[i]
+				if adjacent_part == null:
+					print("slot %s should have an empty indicator" % i)
+					var indicator = Sprite2D.new()
+					indicator.texture = empty_indicator
+					indicator.modulate.a = 0.5
+					var center_pos = 16
+					var visual_offset = 8
+					if i == 0:
+						indicator.scale = Vector2(1, 0.5)
+						indicator.set_position(
+								Vector2(center_pos, center_pos-visual_offset))
+					elif i == 1:
+						indicator.scale = Vector2(0.5, 1)
+						indicator.set_position(
+								Vector2(center_pos+visual_offset, center_pos))
+					elif i == 2:
+						indicator.scale = Vector2(1, 0.5)
+						indicator.set_position(
+								Vector2(center_pos, center_pos+visual_offset))
+					elif i == 3:
+						indicator.scale = Vector2(0.5, 1)
+						indicator.set_position(
+								Vector2(center_pos-visual_offset, center_pos))
+					self.add_child(indicator)
 		fish_part_texture_rect.texture = fish_part.texture
 		associated_fish_part = fish_part
+			
 	else:
 		fish_part_texture_rect.texture = load("res://assets/inventory_placeholder.png")
 

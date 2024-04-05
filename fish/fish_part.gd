@@ -5,11 +5,11 @@ class_name FishPart
 
 var parent_fish: Entity
 var texture: Texture
+var adjacent_parts: Array = [null, null, null, null] ## north east south west
 
 
 func get_parent_fish() -> Entity:
 	return parent_fish
-	
 	
 func set_parent_fish(new_fish: Entity):
 	parent_fish = new_fish

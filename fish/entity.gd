@@ -12,21 +12,38 @@ func make_fish_parts() -> Array[FishPart]:
 	if fish_parts.size() > 0:
 		return fish_parts
 	else:
-		for vec in arrangement:
+		for i in arrangement.size():
+			var vec = arrangement[i]
 			var current_pos = vec * GS.GRID_SIZE
-			#var current_index = GS.grid_to_index(vec)
-			#print("grid index that has a fish part %s" % current_index)
 			var atlas_texture = AtlasTexture.new()
 			atlas_texture.set_atlas(texture)
 			atlas_texture.set_region(Rect2(current_pos, Vector2(GS.GRID_SIZE, GS.GRID_SIZE)))
 			var fish_part = FishPart.new()
 			fish_part.set_texture(atlas_texture)
-			#fish_part.set_position(current_pos)
 			fish_part.set_parent_fish(self)
-			#fish_parts[current_index] = fish_part
 			fish_parts.append(fish_part)
-			#print(fish_part)
-		#print(fish_parts)
+		
+		# inefficient but should be fine for sizes we are dealing with
+		for i in arrangement.size():	
+			var vec1 = arrangement[i]
+			var fish_part1 = fish_parts[i]
+			for j in range(i, arrangement.size()):
+				var vec2 = arrangement[j]
+				var fish_part2 = fish_parts[j]
+				if vec1 + Vector2(0, -1) == vec2: # north
+					fish_part1.adjacent_parts[0] = fish_part2
+					fish_part2.adjacent_parts[2] = fish_part1
+				elif vec1 + Vector2(1, 0) == vec2: # east
+					fish_part1.adjacent_parts[1] = fish_part2
+					fish_part2.adjacent_parts[3] = fish_part1
+				elif vec1 + Vector2(0, 1) == vec2: # south
+					fish_part1.adjacent_parts[2] = fish_part2
+					fish_part2.adjacent_parts[0] = fish_part1
+				elif vec1 + Vector2(-1, 0) == vec2: # west
+					fish_part1.adjacent_parts[3] = fish_part2
+					fish_part2.adjacent_parts[1] = fish_part1
+					
+			
 		return fish_parts
 
 func get_arrangement():
