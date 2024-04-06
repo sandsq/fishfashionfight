@@ -22,7 +22,8 @@ func _on_change_scene_button_pressed():
 	var enemy_display = InventoryDisplay.instantiate()
 	enemy_display.global_position = Vector2(-4000, -4000)
 	add_child(enemy_display)
-	#enemy_display.inventory.add_to_inventory()
+	enemy_display.inventory.add_to_inventory()
+	enemy_display.update_inventory_display()
 	
 	new_scene.enemy_fish_parts = enemy_display.inventory.get_fish_parts()
 	

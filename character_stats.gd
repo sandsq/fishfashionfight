@@ -14,6 +14,7 @@ signal no_health
 @export var attack_speed: float = 0.5 ## seconds between attacks5
 @export var fishing_accuracy: float = 0.05 ## with this margin for error when accurate timing
 @export var fishing_inaccuracy: float = 0.25 ## up to this far away when inaccurate timing
+@export var max_fish_allowed: int = 5
 
 
 @onready var current_health = max_health:

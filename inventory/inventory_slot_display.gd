@@ -68,7 +68,6 @@ func display_fish_part(fish_part):
 		associated_fish_part = fish_part
 		synergy_detector_shape.disabled = false
 		for i in associated_fish_part.adjacent_synergies_to_provide.size():
-			#print("shader edges %s, for %s" % [shader_edges, get_index()])
 			var synergy_to_provide = \
 						associated_fish_part.adjacent_synergies_to_provide[i]
 			#print("synergy to provide %s, index %s" % [synergy_to_provide, i])
@@ -80,16 +79,16 @@ func display_fish_part(fish_part):
 				synergy.attached_to = self 
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()
-				#print("synergy %s, synergy shape %s, data" 
-						#% [synergy, synergy_shape, synergy.synergy_data])
+				print("synergy %s, synergy shape %s, data %s" 
+						% [synergy, synergy_shape, synergy.synergy_data])
 				var center = Vector2(GS.GRID_SIZE / 2.0, GS.GRID_SIZE / 2.0)
 				var offset = 12
 				var horz_shape = Vector2(16, 12)
 				var vert_shape = Vector2(12, 16)
 				var texture_region = fish_part_texture_rect.texture.region
 				var inactive_colors: Array[Plane] = [GS.inactive_synergy_color, GS.inactive_synergy_color, GS.inactive_synergy_color, GS.inactive_synergy_color]
-				print("atlas region, for use in shader, pos %s, size %s" 
-						% [texture_region.position, texture_region.size])
+				#print("atlas region, for use in shader, pos %s, size %s" 
+						#% [texture_region.position, texture_region.size])
 				var single_edge_info = Plane() # if a move happened that only activates one synergy, only show that synergy
 				if i == 0:
 					synergy_shape.size = horz_shape

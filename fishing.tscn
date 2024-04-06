@@ -123,3 +123,25 @@ color = Color(0, 0, 0, 1)
 custom_minimum_size = Vector2(2, 8)
 layout_mode = 2
 color = Color(0, 0, 0, 1)
+
+[node name="InfoLabel" type="Label" parent="."]
+offset_left = 112.0
+offset_top = 88.0
+offset_right = 152.0
+offset_bottom = 111.0
+
+[node name="FishRemainingLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 272.0
+offset_right = 56.0
+offset_bottom = 295.0
+text = "5 / 5"
+
+[node name="FinishFishingButton" type="Button" parent="."]
+offset_left = 16.0
+offset_top = 320.0
+offset_right = 24.0
+offset_bottom = 328.0
+text = "Finish early"
+
+[connection signal="pressed" from="FinishFishingButton" to="." method="_on_finish_fishing_button_pressed"]

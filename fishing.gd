@@ -2,6 +2,8 @@ extends Node2D
 
 
 signal timing_round_finished
+signal remaining_fish_allowed_changed
+signal fishing_finished
 
 const timing_bar_size = Vector2(4, 25)
 const x_offset = 63 ## this is the center of the timing bar, consider it x=0
@@ -11,7 +13,7 @@ const fishing_bar_global_pos = Vector2(64, 24)
 const right_distance = fishing_bar_size.x - x_offset
 
 
-@export var timing_seconds = 2.0
+@export var timing_seconds = 1.0
 @export var fishing_rod: Line2D
 
 var InventoryContainer = preload("res://inventory/inventory_container.tscn")
@@ -32,12 +34,23 @@ var TwoByOne = preload("res://fish/two_by_one.tscn")
 var UFish = preload("res://fish/u_fish.tscn")
 var available_fish = [[OneByOne], [OneByTwo, TwoByOne], [UFish]]
 var inventory = null
+var input_allowed = true
 
 @onready var fishing_bar = $FishingBar
 @onready var timing_bar = $FishingBar/TimingBar
 @onready var good_margin = $FishingBar/GoodMargin
 @onready var character = $Character
+@onready var max_fish_allowed = character.character_stats.max_fish_allowed
+@onready var remaining_fish_allowed = max_fish_allowed:
+	set(new_value):
+		remaining_fish_allowed = new_value
+		emit_signal("remaining_fish_allowed_changed")
+		if remaining_fish_allowed <= 0:
+			emit_signal("fishing_finished")
+@onready var info_label = $InfoLabel
 @onready var inventory_display = InventoryDisplay.instantiate()
+@onready var fish_remaining_label = $FishRemainingLabel
+
 
 func _ready():
 
@@ -45,26 +58,31 @@ func _ready():
 	inventory_display.global_position = Vector2(256, 128)
 	add_child(inventory_display)
 	inventory = inventory_display.inventory
-	inventory_display.inventory.fishes_changed.connect(
-			inventory_display._on_fishes_changed)
+	inventory.fishes_changed.connect(inventory_display._on_fishes_changed)
+	inventory.adding_failed.connect(_on_adding_failed)
 	rng.seed = hash("fff")
 	fishing_bar.size = fishing_bar_size
 	fishing_bar.global_position = fishing_bar_global_pos
 	timing_bar.size = timing_bar_size
 	good_margin.position = Vector2(x_offset - good_margin.size.x / 2.0, 0)
 	self.timing_round_finished.connect(roll_fish)
+	self.remaining_fish_allowed_changed.connect(_update_remaining_fish)
+	self.fishing_finished.connect(_process_fishing_finished)
 	character.weapon.visible = false
 	character.hp_label.visible = false
+	character.damage_label.visible = false
+	fish_remaining_label.text = "%s / %s" % [remaining_fish_allowed, max_fish_allowed]
 	reset_timing_state()
 
 func _process(_delta):
-	if Input.is_action_just_pressed("ui_accept"):
-		if timing_bar_can_be_started:
-			start_timing_bar()
-		elif timing_bar_is_moving_right:
-			reverse_timing_bar()
-		elif timing_bar_is_moving_left:
-			stop_timing_bar()
+	if input_allowed:
+		if Input.is_action_just_pressed("ui_accept"):
+			if timing_bar_can_be_started:
+				start_timing_bar()
+			elif timing_bar_is_moving_right:
+				reverse_timing_bar()
+			elif timing_bar_is_moving_left:
+				stop_timing_bar()
 		
 
 func reset_timing_state():
@@ -164,9 +182,9 @@ func process_timing_bar_moving_right_finished():
 	emit_signal("timing_round_finished")
 	
 func process_timing_bar_moving_left_finished():
-	timing_bar_ghost = timing_bar.duplicate()
-	timing_bar_ghost.modulate.a = 0.5
-	fishing_bar.add_child(timing_bar_ghost)
+	#timing_bar_ghost = timing_bar.duplicate()
+	#timing_bar_ghost.modulate.a = 0.5
+	#fishing_bar.add_child(timing_bar_ghost)
 	var a = _calculate_casting_position_from_accuracy(
 				0.0, 1.0)
 	var rolled_inaccuracy = a[0]
@@ -187,6 +205,7 @@ func roll_fish(cast_duration = 0.5):
 	var final_points = PackedVector2Array([fishing_line_start, fishing_line_end])
 	var tween = create_tween()
 	tween.tween_property(fishing_line, "points", final_points, cast_duration)
+	input_allowed = false
 	tween.play()
 	await tween.finished
 	var fish_size_index = floor(((casting_position - fishing_bar_global_pos.x) / fishing_bar_size.x) * available_fish.size())
@@ -206,12 +225,32 @@ func roll_fish(cast_duration = 0.5):
 	tween_line_back.play()
 	tween_fish_back.play()
 	await tween_fish_back.finished
+	
 	fishing_line.remove_child(fish_sprite)
 	
+	# technically should do this while reeling back so that computation
+	# time of fitting into inventory happens during the reel back
 	inventory.add_fish_to_inventory(chosen_fish, null, -1, -1)
 	
 	reset_timing_state()
+	remaining_fish_allowed -= 1
+	input_allowed = true
 	timing_bar_can_be_started = true
+
+func proceed_to_fashion_scene():
+	var new_scene = InventoryContainer.instantiate()
+	print("inventory right before switching to fashion scene %s" 
+			% [inventory])
+	get_tree().root.add_child(new_scene)
+	#new_scene.call_deferred("remove_child", new_scene.player_display)
+	new_scene.player_display.queue_free()
+	inventory_display.scale = Vector2(1.0, 1.0)
+	inventory_display.global_position = Vector2.ZERO
+	remove_child(inventory_display)
+	new_scene.add_child(inventory_display)
+	new_scene.player_display = inventory_display
+	
+	self.visible = false
 	
 	
 func _calculate_casting_position_from_accuracy(lower_bound, upper_bound):
@@ -219,3 +258,19 @@ func _calculate_casting_position_from_accuracy(lower_bound, upper_bound):
 	var new_position = fishing_bar_global_pos.x + clamp(timing_bar_ghost.position.x * rolled_accuracy,
 			x_offset, fishing_bar.size.x)
 	return [rolled_accuracy, new_position]
+
+func _on_adding_failed():
+	print("adding failed message?")
+	info_label.text = "couldn't add fish to inventory due to space"
+	await get_tree().create_timer(2.0).timeout
+	info_label.text = ""
+
+func _update_remaining_fish():
+	fish_remaining_label.text = "%s / %s" % [remaining_fish_allowed, max_fish_allowed]
+
+func _process_fishing_finished():
+	proceed_to_fashion_scene()
+
+
+func _on_finish_fishing_button_pressed():
+	proceed_to_fashion_scene()

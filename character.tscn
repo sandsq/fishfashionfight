@@ -56,6 +56,12 @@ offset_right = 60.0
 offset_bottom = 87.0
 text = "10 / 10"
 
+[node name="DamageLabel" type="Label" parent="."]
+offset_left = -16.0
+offset_top = 24.0
+offset_right = 4.0
+offset_bottom = 47.0
+
 [connection signal="health_changed" from="CharacterStats" to="." method="_on_character_stats_health_changed"]
 [connection signal="max_health_changed" from="CharacterStats" to="." method="_on_character_stats_max_health_changed"]
 [connection signal="no_health" from="CharacterStats" to="." method="_on_character_stats_no_health"]

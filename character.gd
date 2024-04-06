@@ -9,6 +9,7 @@ var fish_part_weapons = null
 @onready var character_stats = $CharacterStats
 @onready var weapon = $Weapon
 @onready var hp_label = $HPLabel
+@onready var damage_label = $DamageLabel
 
 func _ready():
 	if flipped:
@@ -48,15 +49,12 @@ func _on_hurtbox_area_entered(area):
 	var damage_taken = area.damage
 	character_stats.current_health -= damage_taken
 	#print("character %s got hurt by something entering its hurtbox" % self.name)
-	var damage_label = Label.new()
-	damage_label.text = "-%s" % damage_taken
-	damage_label.set_position(Vector2(32, 16))
-	add_child(damage_label)
+	damage_label.text = "-%s" % round(damage_taken)
 	
 
 
 func _on_character_stats_health_changed(_new_health):
-	hp_label.text = "%s / %s" % [character_stats.current_health, character_stats.max_health]
+	hp_label.text = "%s / %s" % [round(character_stats.current_health), character_stats.max_health]
 
 
 func _on_character_stats_max_health_changed(_new_max_health):

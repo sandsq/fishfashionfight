@@ -1,6 +1,7 @@
 extends Node2D
 
 signal fishes_changed(indexes) ## array of positions that changed
+signal adding_failed
 
 @export var inventory_fish_parts: Array = [
 	null, null, null, null, null, 
@@ -30,14 +31,17 @@ func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, 
 		var new_abs_inds: Array[int] = []
 		for rel_ind in relative_indexes:
 			var index_to_try = starting_index_to_try + rel_ind
+			if index_to_try >= inventory_fish_parts.size():
+				can_place = false
+				break
 			new_abs_inds.append(index_to_try)
-			print("starting at index %s, trying that + %s, ie %s, inventory contains %s there" 
-					% [starting_index_to_try, rel_ind, index_to_try, inventory_fish_parts[index_to_try]])
+			#print("starting at index %s, trying that + %s, ie %s, inventory contains %s there" 
+					#% [starting_index_to_try, rel_ind, index_to_try, inventory_fish_parts[index_to_try]])
 			if inventory_fish_parts[index_to_try] != null:
 				can_place = false
 				break
 		if can_place == true:
-			print("\tcan place that fish")
+			#print("\tcan place that fish")
 			# if we make it here, then all positions are valid, 
 			# so we don't need to look anymore
 			fish_to_add.set_absolute_arrangement_indexes(new_abs_inds)
@@ -55,6 +59,7 @@ func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, 
 			
 	if not fish_placed:
 		print("couldn't find place for fish")
+		emit_signal("adding_failed")
 		return
 	
 
@@ -108,6 +113,7 @@ func add_to_inventory():
 	var testsynergy4 = Synergy.instantiate()
 	testsynergy4.synergy_data = {"damage_boost": 2.0}
 	testpart.set_adjacent_synergy_to_provide(testsynergy4, 2)
+	print("add_to_inventory adding some synergies")
 	var testsynergy42 = Synergy.instantiate()
 	testsynergy42.synergy_data = {"damage_boost": 3.0}
 	testpart.set_adjacent_synergy_to_provide(testsynergy42, 0)
