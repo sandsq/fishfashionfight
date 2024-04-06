@@ -154,7 +154,7 @@ func roll_fish():
 	var fishing_line_start = fishing_rod.get_point_position(1)
 	var fishing_line_end = Vector2(casting_position, 320)
 	var fishing_line = Line2D.new()
-	fishing_line.default_color = Color(0.5, 0.5, 0.5, 1.0)
+	fishing_line.default_color = Color(0.8, 0.7, 0.7, 1.0)
 	fishing_line.width = 2.5
 	fishing_line.add_point(fishing_line_start)
 	fishing_line.add_point(fishing_line_start)
@@ -163,14 +163,15 @@ func roll_fish():
 	var tween = create_tween()
 	tween.tween_property(fishing_line, "points", final_points, 1.0)
 	tween.play()
+	await tween.finished
 	
-	print("not resetting yet to have ghost visible")
-	#reset_timing_state()
+	#print("not resetting yet to have ghost visible ")
+	reset_timing_state()
 	timing_bar_can_be_started = true
 	
 	
 func _calculate_casting_position_from_accuracy(lower_bound, upper_bound):
 	var rolled_accuracy = rng.randf_range(lower_bound, upper_bound)
-	var new_position = clamp(timing_bar_ghost.position.x * rolled_accuracy,
+	var new_position = fishing_bar_global_pos.x + clamp(timing_bar_ghost.position.x * rolled_accuracy,
 			x_offset, fishing_bar.size.x)
 	return [rolled_accuracy, new_position]
