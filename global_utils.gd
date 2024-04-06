@@ -29,7 +29,7 @@ static func clone_synergy(s):
 
 
 func _ready():
-	if get_tree().current_scene.scene_file_path == "res://battle.tscn":
+	if get_tree().current_scene.scene_file_path == "res://battle.tscn" || get_tree().current_scene.scene_file_path == "res://fishing.tscn":
 		return
 	if get_tree().current_scene.scene_file_path != ProjectSettings.get_setting("application/run/main_scene"):
 		get_viewport().global_canvas_transform = get_viewport().global_canvas_transform.translated(Vector2(150, 200))

@@ -12,6 +12,9 @@ signal no_health
 			self.current_health = min(current_health, max_health)
 		emit_signal("max_health_changed", max_health)
 @export var attack_speed: float = 0.5 ## seconds between attacks5
+@export var fishing_accuracy: float = 0.05 ## with this margin for error when accurate timing
+@export var fishing_inaccuracy: float = 0.25 ## up to this far away when inaccurate timing
+
 
 @onready var current_health = max_health:
 	set(new_health):
@@ -19,3 +22,5 @@ signal no_health
 		emit_signal("health_changed", current_health)
 		if current_health <= 0:
 			emit_signal("no_health")
+
+
