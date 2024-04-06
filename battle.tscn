@@ -84,14 +84,12 @@ offset_left = 8.0
 offset_top = 328.0
 offset_right = 48.0
 offset_bottom = 351.0
-text = "misc"
 
 [node name="EnemyInfoLabel" type="Label" parent="."]
 offset_left = 384.0
-offset_top = 336.0
+offset_top = 328.0
 offset_right = 424.0
-offset_bottom = 359.0
-text = "misc"
+offset_bottom = 351.0
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 

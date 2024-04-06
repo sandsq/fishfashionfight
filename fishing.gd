@@ -249,6 +249,8 @@ func proceed_to_fashion_scene():
 	remove_child(inventory_display)
 	new_scene.add_child(inventory_display)
 	new_scene.player_display = inventory_display
+	print("in proceed to fashion scene function, if synergies don't activate may need to manually update inventory display")
+	#new_scene.player_display.update_inventory_display()
 	
 	self.visible = false
 	
