@@ -49,12 +49,12 @@ func _on_hurtbox_area_entered(area):
 	var damage_taken = area.damage
 	character_stats.current_health -= damage_taken
 	#print("character %s got hurt by something entering its hurtbox" % self.name)
-	damage_label.text = "-%s" % round(damage_taken)
+	damage_label.text = "-%.1f" % damage_taken
 	
 
 
 func _on_character_stats_health_changed(_new_health):
-	hp_label.text = "%s / %s" % [round(character_stats.current_health), character_stats.max_health]
+	hp_label.text = "%.1f / %s" % [character_stats.current_health, character_stats.max_health]
 
 
 func _on_character_stats_max_health_changed(_new_max_health):

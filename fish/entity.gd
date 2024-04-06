@@ -3,7 +3,7 @@ class_name Entity
 
 @export var texture: Texture
 @export var arrangement: Array[Vector2] ## specifies fish shape with 2d indexes
-@export var base_damage = 1
+@export var base_damage: float = 1
 @export var species = "fish"
 
 var absolute_arrangement_indexes: Array[int] ## specifies fish shape with 1d indexes, the indexes are the absolute positions in the grid

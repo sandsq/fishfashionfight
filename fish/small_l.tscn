@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dsofeack1b3pp"]
+
+[ext_resource type="PackedScene" uid="uid://cvr1n8cvupkm8" path="res://fish/entity.tscn" id="1_u00o6"]
+[ext_resource type="Texture2D" uid="uid://bsysfwcab50ii" path="res://assets/small_l.png" id="2_sk15p"]
+
+[node name="SmallL" instance=ExtResource("1_u00o6")]
+texture = ExtResource("2_sk15p")
+arrangement = Array[Vector2]([Vector2(0, 0), Vector2(0, 1), Vector2(1, 1)])
+base_damage = 1.5
+species = "small_l"

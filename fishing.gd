@@ -31,8 +31,9 @@ var rng = RandomNumberGenerator.new()
 var OneByOne = preload("res://fish/one_by_one.tscn")
 var OneByTwo = preload("res://fish/one_by_two.tscn")
 var TwoByOne = preload("res://fish/two_by_one.tscn")
+var SmallL = preload("res://fish/small_l.tscn")
 var UFish = preload("res://fish/u_fish.tscn")
-var available_fish = [[OneByOne], [OneByTwo, TwoByOne], [UFish]]
+var available_fish = [[OneByOne, OneByTwo], [SmallL, TwoByOne], [UFish]]
 var inventory = null
 var input_allowed = true
 
@@ -230,10 +231,11 @@ func roll_fish(cast_duration = 0.5):
 	
 	# technically should do this while reeling back so that computation
 	# time of fitting into inventory happens during the reel back
-	inventory.add_fish_to_inventory(chosen_fish, null, -1, -1)
+	var fish_placed = inventory.add_fish_to_inventory(chosen_fish, null, -1, -1)
 	
 	reset_timing_state()
-	remaining_fish_allowed -= 1
+	if fish_placed:
+		remaining_fish_allowed -= 1
 	input_allowed = true
 	timing_bar_can_be_started = true
 

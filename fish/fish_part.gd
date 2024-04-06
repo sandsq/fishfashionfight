@@ -1,7 +1,7 @@
 extends Node2D
 class_name FishPart
 
-@export var damage: int = 1
+@export var damage: float = 1
 
 var parent_fish: Entity
 var texture: Texture

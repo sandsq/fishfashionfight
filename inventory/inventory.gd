@@ -60,7 +60,8 @@ func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, 
 	if not fish_placed:
 		print("couldn't find place for fish")
 		emit_signal("adding_failed")
-		return
+	
+	return fish_placed
 	
 
 func add_to_inventory():
