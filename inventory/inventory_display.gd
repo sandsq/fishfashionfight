@@ -29,11 +29,13 @@ func _ready():
 		isd.inventory = inventory
 		isd.can_be_dropped_signal.connect(
 				func(b): can_be_dropped = b)
-		isd.mouse_hovered_over_synergy.connect(_on_received_hover_signal_from_slot)
+		isd.mouse_hovered_over_synergy.connect(
+				_on_received_hover_signal_from_slot)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
 		add_child(isd)
-	inventory.add_to_inventory()
-	inventory.fishes_changed.connect(_on_fishes_changed)
+	print("inventory display, not auto adding to inventory")
+	#inventory.add_to_inventory()
+	#inventory.fishes_changed.connect(_on_fishes_changed)
 	update_inventory_display()
 	
 
@@ -49,7 +51,7 @@ func update_inventory_slot_display(i):
 
 
 func _on_fishes_changed(indexes):
-	#print("on fishes changed triggered for indexes %s" % [indexes])
+	print("on fishes changed triggered for indexes %s" % [indexes])
 	for i in indexes:
 		update_inventory_slot_display(i)
 	#print("telling inventory display that %s indexes changed, new inventory %s" % [indexes, inventory.get_fish_parts()])

@@ -2,7 +2,7 @@ extends Node2D
 
 signal fishes_changed(indexes) ## array of positions that changed
 
-@export var fish_parts: Array = [
+@export var inventory_fish_parts: Array = [
 	null, null, null, null, null, 
 	null, null, null, null, null, 
 	null, null, null, null, null, 
@@ -16,7 +16,48 @@ var TwoByOne = preload("res://fish/two_by_one.tscn")
 var OneByOne = preload("res://fish/one_by_one.tscn")
 var Synergy = preload("res://synergy.tscn")
 var drag_data = null
+var first_empty_index = 0 ## for more efficiency, could only check starting from empty slots. But a bit harder to track so not doing this for now
+
+## finds the first available slot that can fit the fish
+func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
+	print("adding fish %s, it should already be instantiated" % fish_to_add)
+	var fish_parts = fish_to_add.make_fish_parts()
+	var relative_indexes = fish_to_add.get_arrangement_indexes()
+	var can_place = true
+	var fish_placed = false
+	for starting_index_to_try \
+			in range(first_empty_index, inventory_fish_parts.size()):
+		var new_abs_inds: Array[int] = []
+		for rel_ind in relative_indexes:
+			var index_to_try = starting_index_to_try + rel_ind
+			new_abs_inds.append(index_to_try)
+			print("starting at index %s, trying that + %s, ie %s, inventory contains %s there" 
+					% [starting_index_to_try, rel_ind, index_to_try, inventory_fish_parts[index_to_try]])
+			if inventory_fish_parts[index_to_try] != null:
+				can_place = false
+				break
+		if can_place == true:
+			print("\tcan place that fish")
+			# if we make it here, then all positions are valid, 
+			# so we don't need to look anymore
+			fish_to_add.set_absolute_arrangement_indexes(new_abs_inds)
+			assert(new_abs_inds.size() == fish_parts.size())
+			for fish_part_index in fish_parts.size():
+				#print("\tadding fish part %s" % fish_parts[fish_part_index])
+				inventory_fish_parts[new_abs_inds[fish_part_index]] \
+						= fish_parts[fish_part_index]
+			fish_placed = true
+			emit_signal("fishes_changed", new_abs_inds)
+			break
+		else:
+			# if we make it here, then there was an invalid place, so we need to try the next starting location
+			can_place = true
+			
+	if not fish_placed:
+		print("couldn't find place for fish")
+		return
 	
+
 func add_to_inventory():
 	var ufishtest = UFish.instantiate()
 	var ufish_parts = ufishtest.make_fish_parts()
@@ -36,7 +77,7 @@ func add_to_inventory():
 					else:
 						return test_val.species == "two_by_one" 
 			ufish_part.set_adjacent_synergy_to_provide(testsynergy, 0)
-		fish_parts[part_ind] = ufish_part
+		inventory_fish_parts[part_ind] = ufish_part
 		current_ind += 1
 	
 	var fish1 = OneByTwo.instantiate()
@@ -47,17 +88,17 @@ func add_to_inventory():
 	fish2.set_absolute_arrangement_indexes(arr2)
 	var fish_parts1x2 = fish1.make_fish_parts()
 	var fish_parts1x2_2 = fish2.make_fish_parts()
-	fish_parts[3] = fish_parts1x2[0]
-	fish_parts[4] = fish_parts1x2[1]
-	fish_parts[15] = fish_parts1x2_2[0]
-	fish_parts[16] = fish_parts1x2_2[1]
+	inventory_fish_parts[3] = fish_parts1x2[0]
+	inventory_fish_parts[4] = fish_parts1x2[1]
+	inventory_fish_parts[15] = fish_parts1x2_2[0]
+	inventory_fish_parts[16] = fish_parts1x2_2[1]
 	
 	var fish3 = TwoByOne.instantiate()
 	var arr3: Array[int] = [8, 13]
 	fish3.set_absolute_arrangement_indexes(arr3)
 	var fish_parts3 = fish3.make_fish_parts()
-	fish_parts[8] = fish_parts3[0]
-	fish_parts[13] = fish_parts3[1]
+	inventory_fish_parts[8] = fish_parts3[0]
+	inventory_fish_parts[13] = fish_parts3[1]
 	
 	var fish4 = OneByOne.instantiate()
 	var arr4: Array[int] = [9]
@@ -70,32 +111,32 @@ func add_to_inventory():
 	var testsynergy42 = Synergy.instantiate()
 	testsynergy42.synergy_data = {"damage_boost": 3.0}
 	testpart.set_adjacent_synergy_to_provide(testsynergy42, 0)
-	fish_parts[9] = testpart
+	inventory_fish_parts[9] = testpart
 	
 	var fish5 = OneByOne.instantiate()
 	var arr5: Array[int] = [6]
 	fish5.set_absolute_arrangement_indexes(arr5)
 	var fish_parts5 = fish5.make_fish_parts()
-	fish_parts[6] = fish_parts5[0]
+	inventory_fish_parts[6] = fish_parts5[0]
 	
 	var fish6 = OneByOne.instantiate()
 	var arr6: Array[int] = [14]
 	fish6.set_absolute_arrangement_indexes(arr6)
 	var fish_parts6 = fish6.make_fish_parts()
-	fish_parts[14] = fish_parts6[0]
+	inventory_fish_parts[14] = fish_parts6[0]
 	
 func get_fish_part_at_index(i):
-	return fish_parts[i]
+	return inventory_fish_parts[i]
 
 func get_fish_parts():
-	return fish_parts
+	return inventory_fish_parts
 
 func set_fish_parts(indexes, new_fish_parts):
 	var previous_items: Array = []
 	var current_ind = 0
 	for i in indexes:
-		previous_items.append(fish_parts[i])
-		fish_parts[i] = new_fish_parts[current_ind]
+		previous_items.append(inventory_fish_parts[i])
+		inventory_fish_parts[i] = new_fish_parts[current_ind]
 		current_ind += 1	
 	print("setting %s to new fish parts %s" % [indexes, new_fish_parts])
 	emit_signal("fishes_changed", indexes)
@@ -105,9 +146,9 @@ func set_fish_parts(indexes, new_fish_parts):
 func remove_fish_parts(indexes):
 	var previous_items: Array = []
 	for i in indexes:
-		previous_items.append(fish_parts[i])
-		fish_parts[i] = null
-	print("removing fish parts at %s, inventory should by %s" % [indexes, fish_parts])
+		previous_items.append(inventory_fish_parts[i])
+		inventory_fish_parts[i] = null
+	print("removing fish parts at %s, inventory should by %s" % [indexes, inventory_fish_parts])
 	emit_signal("fishes_changed", indexes)
 	return previous_items
 	
