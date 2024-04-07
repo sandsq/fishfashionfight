@@ -77,7 +77,7 @@ theme_override_constants/margin_bottom = 40
 
 [node name="HBoxContainer" type="HBoxContainer" parent="FishingBar/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 62
+theme_override_constants/separation = 126
 
 [node name="TickMarker" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2, 8)
@@ -100,26 +100,6 @@ layout_mode = 2
 color = Color(0, 0, 0, 1)
 
 [node name="TickMarker5" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(2, 8)
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TickMarker6" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(2, 8)
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TickMarker7" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(2, 8)
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TickMarker8" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(2, 8)
-layout_mode = 2
-color = Color(0, 0, 0, 1)
-
-[node name="TickMarker9" type="ColorRect" parent="FishingBar/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(2, 8)
 layout_mode = 2
 color = Color(0, 0, 0, 1)

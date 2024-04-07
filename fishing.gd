@@ -13,7 +13,7 @@ const fishing_bar_global_pos = Vector2(64, 24)
 const right_distance = fishing_bar_size.x - x_offset
 
 
-@export var timing_seconds = 1.0
+@export var timing_seconds = 1.25
 @export var fishing_rod: Line2D
 
 var InventoryContainer = preload("res://inventory/inventory_container.tscn")
@@ -153,7 +153,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit was accurate, accuracy %s, final pos %s" 
 				% [rolled_accuracy, casting_position])
-		info_label.text = "Accurate hit, randomness factor %s, distance %s" % [snapped(rolled_accuracy, 0.1), round(casting_position)]
+		info_label.text = "Accurate hit, randomness factor %s, distance %s" % [snapped(rolled_accuracy, 0.01), round(_convert_absolute_to_bar_pos(casting_position))]
 		hit_was_accurate = true
 	elif timing_bar.position.x + timing_bar.size.x < good_margin.position.x:
 		var undershot_percentage = (x_offset - (good_margin.position.x \
@@ -166,7 +166,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit undershot (left) by %s, added inaccuracy %s, final pos %s" 
 				% [undershot_percentage, rolled_inaccuracy, casting_position])
-		info_label.text = "Undershot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
+		info_label.text = "Undershot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 	elif timing_bar.position.x > good_margin.position.x + good_margin.size.x:
 		var overshot_percentage = (timing_bar.position.x - 
 				(good_margin.position.x + good_margin.size.x)) / right_distance
@@ -177,7 +177,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit overshot (right) by %s, inaccuracy %s, final pos %s" 
 				% [overshot_percentage, rolled_inaccuracy, casting_position])
-		info_label.text = "Overshot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
+		info_label.text = "Overshot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 		
 	emit_signal("timing_round_finished")
 
@@ -189,7 +189,7 @@ func process_timing_bar_moving_right_finished():
 	casting_position = x_offset + right_distance * rolled_inaccuracy
 	print("\trandom inaccuracy %s, final pos %s" 
 			% [rolled_inaccuracy, casting_position])
-	info_label.text = "Random cast, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
+	info_label.text = "Random cast, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 	emit_signal("timing_round_finished")
 	
 func process_timing_bar_moving_left_finished():
@@ -202,7 +202,7 @@ func process_timing_bar_moving_left_finished():
 	casting_position = a[1]
 	print("\tleft end, extreme undershoot %s, final pos %s" 
 			% [rolled_inaccuracy, casting_position])
-	info_label.text = "Extreme potential undershoot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
+	info_label.text = "Extreme potential undershoot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 	emit_signal("timing_round_finished")
 
 func roll_fish(cast_duration = 0.5):
@@ -297,7 +297,10 @@ func proceed_to_fashion_scene():
 	
 	self.visible = false
 	
-	
+
+func _convert_absolute_to_bar_pos(abs_pos):
+	return abs_pos - x_offset - fishing_bar_global_pos.x
+
 func _calculate_casting_position_from_accuracy(lower_bound, upper_bound):
 	var rolled_accuracy = rng.randf_range(lower_bound, upper_bound)
 	var new_position = fishing_bar_global_pos.x + clamp(timing_bar_ghost.position.x * rolled_accuracy,
