@@ -292,6 +292,8 @@ func proceed_to_fashion_scene():
 	new_scene.player_display = inventory_display
 	new_scene.player_display.received_hover_signal_from_slot.connect(
 			new_scene._change_info)
+	new_scene.player_display.received_fish_part_hover_from_slot.connect(
+			new_scene._on_active_inventory_display_received_fish_part_hover_from_slot)
 	print("in proceed to fashion scene function, if synergies don't activate may need to manually update inventory display")
 	#new_scene.player_display.update_inventory_display()
 	

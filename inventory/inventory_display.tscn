@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://inventory/inventory_display.gd" id="1_g3q6a"]
 
 [node name="InventoryDisplay" type="GridContainer"]
+mouse_filter = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 4

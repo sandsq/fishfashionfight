@@ -2,6 +2,8 @@ extends CenterContainer
 
 signal can_be_dropped_signal
 signal mouse_hovered_over_synergy(data)
+signal mouse_hovered_over_fish_part(data)
+
 
 @export var display_debug_adjacents = false
 
@@ -20,10 +22,12 @@ var shader_edges = Plane(0, 0, 0, 0)
 @onready var fish_part_texture_rect = $FishPartTextureRect
 @onready var synergy_detector = $SynergyDetector
 @onready var synergy_detector_shape = $SynergyDetector/CollisionShape2D
+@onready var info_detector_shape = $InfoDetector/CollisionShape2D
 
 func _ready():
 	synergy_detector.area_entered.connect(_on_synergy_detector_entered)
 	synergy_detector.area_exited.connect(_on_synergy_detector_exited)
+	#synergy_detector.mouse_entered.connect(_on_synergy_detector_mouse_entered)
 	
 
 func _process(_delta):
@@ -67,6 +71,7 @@ func display_fish_part(fish_part):
 		
 		associated_fish_part = fish_part
 		synergy_detector_shape.disabled = false
+		info_detector_shape.disabled = false
 		for i in associated_fish_part.adjacent_synergies_to_provide.size():
 			var synergy_to_provide = \
 						associated_fish_part.adjacent_synergies_to_provide[i]
@@ -141,6 +146,7 @@ func display_fish_part(fish_part):
 		fish_part_texture_rect.material.shader = hl_shader
 		fish_part_texture_rect.material.set_shader_parameter("edge", Plane(0, 0, 0, 0))
 		synergy_detector_shape.disabled = true
+		info_detector_shape.disabled = true
 		shader_edges = Plane(0, 0, 0, 0)
 		for i in range(4):
 			var provided_synergy = provided_synergies[i]
@@ -317,3 +323,10 @@ func _on_synergy_detector_exited(area):
 func _on_mouse_entered_synergy_zone(synergy_data):
 	#print("show tooltip here %s" % [synergy_data])
 	emit_signal("mouse_hovered_over_synergy", synergy_data)
+	
+
+
+
+func _on_info_detector_mouse_entered():
+	#print("mouse entered info detector")
+	emit_signal("mouse_hovered_over_fish_part", associated_fish_part)

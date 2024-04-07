@@ -1,6 +1,7 @@
 extends GridContainer
 
 signal received_hover_signal_from_slot(data)
+signal received_fish_part_hover_from_slot(data)
 
 var num_slots: int
 var Inventory = preload("res://inventory/inventory.tscn")
@@ -31,6 +32,8 @@ func _ready():
 				func(b): can_be_dropped = b)
 		isd.mouse_hovered_over_synergy.connect(
 				_on_received_hover_signal_from_slot)
+		isd.mouse_hovered_over_fish_part.connect(
+				_on_received_fish_part_hovered)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
 		add_child(isd)
 	
@@ -91,5 +94,8 @@ func _notification(what):
 func _on_received_hover_signal_from_slot(data):
 	emit_signal("received_hover_signal_from_slot", data)
 
+func _on_received_fish_part_hovered(data):
+	#print("fish part hovered, in invent display, data %s" % [data])
+	emit_signal("received_fish_part_hover_from_slot", data)
 
 

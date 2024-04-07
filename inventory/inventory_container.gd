@@ -6,9 +6,12 @@ var Inventory = preload("res://inventory/inventory.tscn")
 
 @onready var player_display = $CenterContainer/ActiveInventoryDisplay
 @onready var info_label = %InfoLabel
+@onready var fish_part_info = %FishPartInfo
 
 func _ready():
-	player_display.received_hover_signal_from_slot.connect(_change_info)
+	pass
+	#player_display.received_hover_signal_from_slot.connect(_change_info)
+	#player_display.received_hover_fish_part.connect(func(): print("???"))
 
 func _on_change_scene_button_pressed():
 	
@@ -34,3 +37,11 @@ func _on_change_scene_button_pressed():
 
 func _change_info(data):
 	info_label.text = str(data)
+
+
+
+
+
+func _on_active_inventory_display_received_fish_part_hover_from_slot(data):
+	print("invent container, data %s" % data)
+	fish_part_info.text = "Damage: %s" % data.damage
