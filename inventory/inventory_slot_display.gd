@@ -207,8 +207,8 @@ func _get_drag_data(_position):
 		icon_preview.texture = fish.texture
 		icon_preview.visible = false
 		icon_preview.material = ShaderMaterial.new()
-		icon_preview.scale = Vector2(2.0, 2.0)
-		icon_preview.position = Vector2(-32, -32)
+		icon_preview.scale = Vector2(1.75, 1.75)
+		icon_preview.position = Vector2(-28, -28)
 		#create_shader(icon_preview, Plane(1, 1, 1, 1), Plane(1.0, 0.5, 0.4, 0.5), Vector2.ZERO)
 		drag_preview.add_child(icon_preview)
 	

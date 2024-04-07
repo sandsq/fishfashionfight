@@ -27,10 +27,11 @@ color = Color(0.101961, 0.407843, 0.45098, 1)
 
 [node name="Character" parent="." instance=ExtResource("2_hxm78")]
 z_index = 1
-position = Vector2(80, 200)
+position = Vector2(80, 213)
 
 [node name="FishRod" type="Line2D" parent="."]
 z_index = 2
+position = Vector2(0, 13)
 points = PackedVector2Array(128, 240, 136, 192)
 width = 5.0
 default_color = Color(0.501961, 0.317647, 0.188235, 1)
@@ -105,9 +106,9 @@ layout_mode = 2
 color = Color(0, 0, 0, 1)
 
 [node name="InfoLabel" type="Label" parent="."]
-offset_left = 112.0
+offset_left = 128.0
 offset_top = 88.0
-offset_right = 360.0
+offset_right = 352.0
 offset_bottom = 184.0
 autowrap_mode = 2
 

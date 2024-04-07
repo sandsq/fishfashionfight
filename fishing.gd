@@ -61,8 +61,8 @@ var hit_was_accurate = false
 
 func _ready():
 	add_child(inventory_display)
-	inventory_display.scale = Vector2(0.5, 0.5)
-	inventory_display.global_position = Vector2(8, 128)
+	inventory_display.scale = Vector2(2.0 / 3, 2.0 / 3)
+	inventory_display.global_position = Vector2(4, 82)
 	inventory = inventory_display.inventory
 	inventory.fishes_changed.connect(inventory_display._on_fishes_changed)
 	inventory.adding_failed.connect(_on_adding_failed)

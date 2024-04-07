@@ -22,9 +22,11 @@ var battle_ended = false
 @onready var info_label = $InfoLabel
 @onready var enemy_info_label = $EnemyInfoLabel
 @onready var victory_label = $VictoryLabel
+@onready var again_button = $Button
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	again_button.disabled = true
 	player.fish_part_weapons = player_fish_parts
 	enemy.fish_part_weapons = enemy_fish_parts
 	if player.fish_part_weapons == null:
@@ -86,6 +88,7 @@ func execute_actions(character, opponent, display, indicator):
 			info_label_to_use.text = ""
 		else:
 			character.weapon.texture = null
+			
 		await get_tree().create_timer(
 				character.character_stats.attack_speed).timeout
 		current_fish_ind += 1
@@ -99,6 +102,7 @@ func execute_actions(character, opponent, display, indicator):
 
 func return_to_fishing():
 	
+	self.set_process(false)
 	var Fishing = load("res://fishing.tscn")
 	var fishing = Fishing.instantiate()
 	get_tree().root.add_child(fishing)
@@ -126,6 +130,7 @@ func _create_inventory_indicator():
 	indicator.set_size(Vector2(48, 48))
 	indicator.color = Color(0.9, 0.9, 0.9, 0.8)
 	indicator.z_index = 1
+	indicator.scale = Vector2(2.0 / 3, 2.0 / 3)
 	#inventory_display_highlighter.set_position(
 			#inventory_display.get_child(0).global_position)
 	return indicator
@@ -139,6 +144,7 @@ func _on_player_no_health():
 	did_player_win = false
 	battle_ended = true
 	victory_label.text = "You lost :( Try again!"
+	again_button.disabled = false
 
 func _on_enemy_no_health():
 	print("enemy ran out of health")
@@ -147,6 +153,7 @@ func _on_enemy_no_health():
 	battle_ended = true
 	victory_label.text = "You won! Level %s -> %s. Keep going!" % [GS.level, GS.level + 1]
 	GS.level += 1
+	again_button.disabled = false
 	
 
 
