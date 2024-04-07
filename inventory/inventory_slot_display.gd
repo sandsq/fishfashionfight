@@ -294,6 +294,12 @@ func _on_synergy_detector_entered(area):
 	if area.attached_to == self:
 		print("intersecting with self, don't do anything")
 		return
+	if area == null:
+		print("intersecting area is null, something wrong o.o")
+		return
+	if area.synergy_condition == null:
+		print("synergy condition null, something wrong o.o")
+		return
 	var fish = associated_fish_part.get_parent_fish()
 	var data = {"species": fish.species}
 	if area.synergy_condition.call(data):

@@ -32,11 +32,11 @@ func draw_weapon(fish_part, damage_mult = 1.0, duration=0.25):
 	tween.play()
 	await tween.finished
 
-func attack(fish_part, target_position, duration=0.4, rotation=720.0):
+func attack(fish_part, target_position, duration=0.4, rotation_amount=720.0):
 	var weapon_start_position = weapon.global_position
 	var tween = create_tween()
 	tween.tween_property(weapon, "global_position", target_position, duration)
-	tween.parallel().tween_property(weapon, "global_rotation_degrees", rotation, duration)
+	tween.parallel().tween_property(weapon, "global_rotation_degrees", rotation_amount, duration)
 	await tween.finished
 	if fish_part.lifesteal > 0:
 		self.heal(weapon.get_weapon_damage() * fish_part.lifesteal)

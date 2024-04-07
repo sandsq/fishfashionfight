@@ -34,7 +34,11 @@ var OneByTwo = preload("res://fish/one_by_two.tscn")
 var TwoByOne = preload("res://fish/two_by_one.tscn")
 var SmallL = preload("res://fish/small_l.tscn")
 var UFish = preload("res://fish/u_fish.tscn")
-var available_fish = [[OneByOne, OneByTwo], [SmallL, TwoByOne], [UFish]]
+var Fancy = preload("res://fish/fancy_one_by_one.tscn")
+var Round = preload("res://fish/round_two_by_two.tscn")
+var Seahorse = preload("res://fish/seahorse_one_by_two.tscn")
+var Sword = preload("res://fish/sword_two_by_one.tscn")
+var available_fish = [[OneByOne, OneByTwo, Fancy, Seahorse], [SmallL, TwoByOne, Sword], [UFish, Round]]
 var inventory = null
 var input_allowed = true
 var hit_was_accurate = false
@@ -205,6 +209,7 @@ func roll_fish(cast_duration = 0.5):
 	var fishing_line_start = fishing_rod.get_point_position(1)
 	var fishing_line_end = Vector2(casting_position, 320)
 	var fishing_line = Line2D.new()
+	#fishing_line.z_index = 5
 	fishing_line.default_color = Color(0.8, 0.7, 0.7, 1.0)
 	fishing_line.width = 2.5
 	fishing_line.add_point(fishing_line_start)
@@ -224,7 +229,10 @@ func roll_fish(cast_duration = 0.5):
 	var fish_sprite = Sprite2D.new()
 	fish_sprite.global_position = fishing_line.get_point_position(1)
 	fish_sprite.texture = chosen_fish.texture
-	fishing_line.add_child(fish_sprite)
+	#fishing_line.add_child(fish_sprite)
+	add_child(fish_sprite)
+	remove_child(fishing_line) # nans to get the draw order
+	add_child(fishing_line)
 	var tween_line_back = create_tween()
 	var back_points = PackedVector2Array([fishing_line_start, fishing_line_start])
 	tween_line_back.tween_property(fishing_line, "points", back_points, 2 * cast_duration)
@@ -234,7 +242,9 @@ func roll_fish(cast_duration = 0.5):
 	tween_fish_back.play()
 	await tween_fish_back.finished
 	
-	fishing_line.remove_child(fish_sprite)
+	#fishing_line.remove_child(fish_sprite)
+	remove_child(fish_sprite)
+	remove_child(fishing_line)
 	
 	var synergy = null
 	#var fish_part_synergy = -1

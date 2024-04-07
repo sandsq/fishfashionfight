@@ -55,6 +55,7 @@ offset = Vector2(32, 32)
 [node name="CharacterStats" parent="." instance=ExtResource("3_6l03o")]
 
 [node name="Weapon" type="Sprite2D" parent="."]
+z_index = 3
 texture = ExtResource("4_7hn0p")
 script = ExtResource("5_ua6m2")
 metadata/_edit_group_ = true
