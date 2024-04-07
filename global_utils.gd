@@ -2,7 +2,7 @@ extends Node
 class_name GS
 
 static var GRID_SIZE = 32
-static var INVENTORY_ROWS = 5
+static var INVENTORY_ROWS = 6
 static var INVENTORY_COLS = 5
 static var INVENTORY_SIZE = INVENTORY_ROWS * INVENTORY_COLS
 static var Synergy = preload("res://synergy.tscn")
@@ -12,7 +12,7 @@ static var active_synergy_color = Plane(0.2, 0.8, 0.6, 0.5)
 static var level: int = 1
 
 static func grid_to_index(grid_pos: Vector2) -> int:
-	var i = grid_pos.y * INVENTORY_ROWS + grid_pos.x
+	var i = grid_pos.y * INVENTORY_COLS + grid_pos.x
 	#print("position %s on an %s x %s grid is index %s" % [grid_pos, INVENTORY_ROWS, INVENTORY_COLS, i])
 	return i
 

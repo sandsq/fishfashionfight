@@ -281,7 +281,7 @@ func proceed_to_fashion_scene():
 	#new_scene.call_deferred("remove_child", new_scene.player_display)
 	new_scene.player_display.queue_free()
 	inventory_display.global_position = Vector2(2, 2)
-	inventory_display.scale = Vector2(2.0, 2.0)
+	inventory_display.scale = Vector2(1.75, 1.75)
 	remove_child(inventory_display)
 	new_scene.add_child(inventory_display)
 	new_scene.player_display = inventory_display

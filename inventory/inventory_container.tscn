@@ -34,7 +34,7 @@ layout_mode = 0
 offset_left = 344.0
 offset_top = 23.0
 offset_right = 622.0
-offset_bottom = 274.0
+offset_bottom = 290.0
 
 [node name="MarginContainer" type="MarginContainer" parent="InfoPanel"]
 layout_mode = 2
@@ -49,6 +49,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="InfoPanel/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(100, 30)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Drag and drop fish. Hover over bars to see what bonuses are provided to adjacent fish:"
 autowrap_mode = 2
 
@@ -56,11 +57,15 @@ autowrap_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 64)
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 autowrap_mode = 2
 
 [node name="Label2" type="Label" parent="InfoPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Fish can wrap around the boundaries of the dimensional inventory, but bonuses cannot."
+theme_override_font_sizes/font_size = 14
+text = "Fish can wrap around the boundaries of the dimensional inventory, but bonuses cannot.
+
+You only get the first 5 rows for the battle."
 autowrap_mode = 2
 
 [connection signal="pressed" from="ChangeSceneButton" to="." method="_on_change_scene_button_pressed"]

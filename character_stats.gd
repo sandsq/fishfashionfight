@@ -5,7 +5,7 @@ signal max_health_changed(new_max_health)
 signal health_changed(new_health)
 signal no_health
 
-@export var max_health: int = 10 * GS.level:
+@export var max_health: int = 20 * GS.level:
 	set(new_max_health):
 		max_health = new_max_health
 		if current_health != null:

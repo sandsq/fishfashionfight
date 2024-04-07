@@ -8,7 +8,8 @@ signal adding_failed
 	null, null, null, null, null, 
 	null, null, null, null, null, 
 	null, null, null, null, null, 
-	null, null, null, null, null
+	null, null, null, null, null,
+	null, null, null, null, null,
 ]
 
 var UFish = preload("res://fish/u_fish.tscn")
