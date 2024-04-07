@@ -11,6 +11,7 @@ func _ready():
 	player_display.received_hover_signal_from_slot.connect(_change_info)
 
 func _on_change_scene_button_pressed():
+	
 	var old_scene = player_display
 	var new_scene = battle_scene.instantiate()
 	new_scene.previous_scene = old_scene

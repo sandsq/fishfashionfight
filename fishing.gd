@@ -56,10 +56,9 @@ var hit_was_accurate = false
 
 
 func _ready():
-
-	inventory_display.scale = Vector2(0.5, 0.5)
-	inventory_display.global_position = Vector2(256, 128)
 	add_child(inventory_display)
+	inventory_display.scale = Vector2(0.5, 0.5)
+	inventory_display.global_position = Vector2(8, 128)
 	inventory = inventory_display.inventory
 	inventory.fishes_changed.connect(inventory_display._on_fishes_changed)
 	inventory.adding_failed.connect(_on_adding_failed)
@@ -150,6 +149,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit was accurate, accuracy %s, final pos %s" 
 				% [rolled_accuracy, casting_position])
+		info_label.text = "Accurate hit, randomness factor %s, distance %s" % [snapped(rolled_accuracy, 0.1), round(casting_position)]
 		hit_was_accurate = true
 	elif timing_bar.position.x + timing_bar.size.x < good_margin.position.x:
 		var undershot_percentage = (x_offset - (good_margin.position.x \
@@ -162,6 +162,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit undershot (left) by %s, added inaccuracy %s, final pos %s" 
 				% [undershot_percentage, rolled_inaccuracy, casting_position])
+		info_label.text = "Undershot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
 	elif timing_bar.position.x > good_margin.position.x + good_margin.size.x:
 		var overshot_percentage = (timing_bar.position.x - 
 				(good_margin.position.x + good_margin.size.x)) / right_distance
@@ -172,7 +173,8 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit overshot (right) by %s, inaccuracy %s, final pos %s" 
 				% [overshot_percentage, rolled_inaccuracy, casting_position])
-	
+		info_label.text = "Overshot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
+		
 	emit_signal("timing_round_finished")
 
 func process_timing_bar_moving_right_finished():
@@ -183,6 +185,7 @@ func process_timing_bar_moving_right_finished():
 	casting_position = x_offset + right_distance * rolled_inaccuracy
 	print("\trandom inaccuracy %s, final pos %s" 
 			% [rolled_inaccuracy, casting_position])
+	info_label.text = "Random cast, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
 	emit_signal("timing_round_finished")
 	
 func process_timing_bar_moving_left_finished():
@@ -195,6 +198,7 @@ func process_timing_bar_moving_left_finished():
 	casting_position = a[1]
 	print("\tleft end, extreme undershoot %s, final pos %s" 
 			% [rolled_inaccuracy, casting_position])
+	info_label.text = "Extreme potential undershoot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(casting_position)]
 	emit_signal("timing_round_finished")
 
 func roll_fish(cast_duration = 0.5):
@@ -212,7 +216,7 @@ func roll_fish(cast_duration = 0.5):
 	input_allowed = false
 	tween.play()
 	await tween.finished
-	var fish_size_index = floor(((casting_position - fishing_bar_global_pos.x) / fishing_bar_size.x) * available_fish.size())
+	var fish_size_index = min(floor(((casting_position - fishing_bar_global_pos.x) / fishing_bar_size.x) * available_fish.size()), available_fish.size() - 1) # exact dimensions are annoying to keep track of because of things with thickness, timing bar offset, etc., so just use this hack
 	var fish_size_options = available_fish[fish_size_index]
 	var fish_size_options_index = randi_range(0, fish_size_options.size() - 1)
 	var chosen_fish = fish_size_options[fish_size_options_index].instantiate()
@@ -233,8 +237,8 @@ func roll_fish(cast_duration = 0.5):
 	fishing_line.remove_child(fish_sprite)
 	
 	var synergy = null
-	var fish_part_synergy = -1
-	var fish_part_synergy_side = -1
+	#var fish_part_synergy = -1
+	#var fish_part_synergy_side = -1
 	#func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
 	if hit_was_accurate:
 		synergy = Synergy.instantiate()
@@ -260,8 +264,8 @@ func proceed_to_fashion_scene():
 	get_tree().root.add_child(new_scene)
 	#new_scene.call_deferred("remove_child", new_scene.player_display)
 	new_scene.player_display.queue_free()
-	inventory_display.scale = Vector2(1.0, 1.0)
-	inventory_display.global_position = Vector2.ZERO
+	inventory_display.global_position = Vector2(2, 2)
+	inventory_display.scale = Vector2(2.0, 2.0)
 	remove_child(inventory_display)
 	new_scene.add_child(inventory_display)
 	new_scene.player_display = inventory_display

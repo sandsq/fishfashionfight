@@ -81,8 +81,7 @@ func display_fish_part(fish_part):
 				synergy.attached_to = self 
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()
-				print("synergy %s, synergy shape %s, data %s" 
-						% [synergy, synergy_shape, synergy.synergy_data])
+				
 				var center = Vector2(GS.GRID_SIZE / 2.0, GS.GRID_SIZE / 2.0)
 				var offset = 12
 				var horz_shape = Vector2(16, 12)
@@ -97,6 +96,7 @@ func display_fish_part(fish_part):
 					synergy.set_position(center + Vector2(0, -offset))
 					single_edge_info = Plane(1, 0, 0, 0)
 					shader_edges = Plane(shader_edges.x + 1, shader_edges.y, shader_edges.z, shader_edges.d) # ensure all edges of a fish get indicated
+					print("about to create shader for slot %s, synergy %s, synergy shape %s, data %s, on side %s" % [get_index(), synergy, synergy_shape, synergy.synergy_data, i])
 					create_shader(fish_part_texture_rect, shader_edges, 
 							inactive_colors, texture_region.position)
 				elif i == 1:
@@ -104,13 +104,17 @@ func display_fish_part(fish_part):
 					synergy.set_position(center + Vector2(offset, 0))
 					shader_edges = Plane(shader_edges.x, shader_edges.y + 1, shader_edges.z, shader_edges.d)
 					single_edge_info = Plane(0, 1, 0, 0)
+					print("about to create shader for slot %s, synergy %s, synergy shape %s, data %s, on side %s" % [get_index(), synergy, synergy_shape, synergy.synergy_data, i])
 					create_shader(fish_part_texture_rect, shader_edges, 
 							inactive_colors, texture_region.position)
+					
 				elif i == 2:
 					single_edge_info = Plane(0, 0, 1, 0)
 					synergy_shape.size = horz_shape
 					synergy.set_position(center + Vector2(0, offset))
 					shader_edges = Plane(shader_edges.x, shader_edges.y, shader_edges.z + 1, shader_edges.d)
+					print("about to create shader for slot %s, synergy %s, synergy shape %s, data %s, on side %s" % [get_index(), synergy, synergy_shape, synergy.synergy_data, i])
+					
 					create_shader(fish_part_texture_rect, shader_edges, 
 							inactive_colors, texture_region.position)
 				elif i == 3:
@@ -118,6 +122,7 @@ func display_fish_part(fish_part):
 					synergy.set_position(center + Vector2(-offset, 0))
 					single_edge_info = Plane(0, 0, 0, 1)
 					shader_edges = Plane(shader_edges.x, shader_edges.y, shader_edges.z, shader_edges.d + 1)
+					print("about to create shader for slot %s, synergy %s, synergy shape %s, data %s, on side %s" % [get_index(), synergy, synergy_shape, synergy.synergy_data, i])
 					create_shader(fish_part_texture_rect, shader_edges, 
 							inactive_colors, texture_region.position)
 				
@@ -136,6 +141,7 @@ func display_fish_part(fish_part):
 		fish_part_texture_rect.material.shader = hl_shader
 		fish_part_texture_rect.material.set_shader_parameter("edge", Plane(0, 0, 0, 0))
 		synergy_detector_shape.disabled = true
+		shader_edges = Plane(0, 0, 0, 0)
 		for i in range(4):
 			var provided_synergy = provided_synergies[i]
 			if provided_synergy != null:
@@ -195,6 +201,8 @@ func _get_drag_data(_position):
 		icon_preview.texture = fish.texture
 		icon_preview.visible = false
 		icon_preview.material = ShaderMaterial.new()
+		icon_preview.scale = Vector2(2.0, 2.0)
+		icon_preview.position = Vector2(-32, -32)
 		#create_shader(icon_preview, Plane(1, 1, 1, 1), Plane(1.0, 0.5, 0.4, 0.5), Vector2.ZERO)
 		drag_preview.add_child(icon_preview)
 	
@@ -295,8 +303,8 @@ func _on_synergy_detector_entered(area):
 	
 func _on_synergy_detector_exited(area):
 	print("removing candidate for synergy, I am index %s" % [get_index()])
-	for s in associated_fish_part.received_synergy_data:
-		print(area.edge_info)
+	#for s in associated_fish_part.received_synergy_data:
+		#print(area.edge_info)
 	set_colors_cascading(area.attached_to.fish_part_texture_rect, area.edge_info, GS.inactive_synergy_color)
 	associated_fish_part.set_received_synergy_data({}, plane_to_index(area.edge_info))
 

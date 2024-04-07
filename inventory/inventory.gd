@@ -54,13 +54,16 @@ func add_fish_to_inventory(fish_to_add, synergy):
 				#print("\tadding fish part %s" % fish_parts[fish_part_index])
 				inventory_fish_parts[new_abs_inds[fish_part_index]] \
 						= fish_parts[fish_part_index]
+			
 			var rand_ind = rng.randi_range(0, fish_parts.size() - 1)
 			var rand_fish_part = fish_parts[rand_ind]
 			var rand_fish_part_abs_ind = new_abs_inds[rand_ind]
 			var is_valid_synergy_placement = false
 			var fallback_counter = 0
 			var rand_side = 0
-			while not is_valid_synergy_placement:
+			# synergy won't change at this point, 
+			# but this can check if we should even do these next steps
+			while synergy != null and not is_valid_synergy_placement:
 				rand_side = rng.randi_range(0, 4)
 				if rand_side == 0: 
 					# slot above this fish part will be # rows back
@@ -83,6 +86,7 @@ func add_fish_to_inventory(fish_to_add, synergy):
 						is_valid_synergy_placement = true
 				fallback_counter += 1
 				if fallback_counter >= 10:
+					print("hitting fallback")
 					break
 			if is_valid_synergy_placement:
 				rand_fish_part.set_adjacent_synergy_to_provide(

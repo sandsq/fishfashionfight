@@ -18,6 +18,8 @@ func _ready():
 		weapon.set_position(Vector2(8, 0))
 	else:
 		weapon.set_position(Vector2(56, 0))
+	character_stats.current_health = character_stats.current_health
+	character_stats.max_health = character_stats.max_health
 
 func _process(_delta):
 	if Input.is_action_just_pressed("attack"):
@@ -25,8 +27,8 @@ func _process(_delta):
 			print("dummy attack for testing purposes")
 			attack(Vector2(290, 150))
 
-func draw_weapon(fish_part, duration=0.25):
-	weapon.set_weapon_damage(fish_part.damage)
+func draw_weapon(fish_part, damage_mult = 1.0, duration=0.25):
+	weapon.set_weapon_damage(fish_part.damage * damage_mult)
 	weapon.set_position(Vector2(16, 32))
 	await get_tree().create_timer(duration).timeout
 	weapon.texture = fish_part.get_parent_fish().texture

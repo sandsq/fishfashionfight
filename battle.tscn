@@ -77,19 +77,21 @@ offset_left = 552.0
 offset_top = 16.0
 offset_right = 618.0
 offset_bottom = 47.0
-text = "Return!"
+text = "Again!"
 
 [node name="InfoLabel" type="Label" parent="."]
 offset_left = 8.0
 offset_top = 335.0
 offset_right = 48.0
 offset_bottom = 358.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [node name="EnemyInfoLabel" type="Label" parent="."]
 offset_left = 384.0
 offset_top = 335.0
 offset_right = 424.0
 offset_bottom = 358.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 

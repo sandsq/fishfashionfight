@@ -9,6 +9,8 @@ static var Synergy = preload("res://synergy.tscn")
 static var inactive_synergy_color = Plane(0.5, 0.5, 0.5, 0.5)
 static var active_synergy_color = Plane(0.2, 0.8, 0.6, 0.5)
 
+static var level: int = 1
+
 static func grid_to_index(grid_pos: Vector2) -> int:
 	var i = grid_pos.y * INVENTORY_ROWS + grid_pos.x
 	#print("position %s on an %s x %s grid is index %s" % [grid_pos, INVENTORY_ROWS, INVENTORY_COLS, i])

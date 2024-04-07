@@ -9,6 +9,8 @@ var executing_enemy_attacks = false
 var placeholder_texture = preload("res://assets/inventory_placeholder.png")
 var inventory_display_highlighter = null
 var enemy_inventory_display_highlighter = null
+var player_damage_mult = 1.0
+var enemy_damage_mult = 1.0
 
 @onready var inventory_display = $InventoryDisplay
 @onready var enemy_inventory_display = $EnemyInventoryDisplay
@@ -50,6 +52,7 @@ func _process(_delta):
 		execute_actions(enemy, player, enemy_inventory_display, enemy_inventory_display_highlighter)
 
 
+
 func execute_actions(character, opponent, display, indicator):
 	var info_label_to_use = info_label if character.name == "Player" else enemy_info_label
 	var current_fish_ind = 0
@@ -61,8 +64,12 @@ func execute_actions(character, opponent, display, indicator):
 			for s in synergies_activated:
 				if s != {}:
 					info_label_to_use.text += str(s)
-					
-			await character.draw_weapon(fish_part)
+			var damage_mult = 1.0
+			if character.name == "Player":
+				damage_mult = player_damage_mult
+			if character.name == "Enemy":
+				damage_mult = enemy_damage_mult
+			await character.draw_weapon(fish_part, damage_mult)
 			await character.attack(opponent.global_position + Vector2(50, 50))
 			character.weapon.texture = null
 			info_label_to_use.text = ""
@@ -71,6 +78,12 @@ func execute_actions(character, opponent, display, indicator):
 		await get_tree().create_timer(
 				character.character_stats.attack_speed).timeout
 		current_fish_ind += 1
+	if character.name == "Player":
+		player_damage_mult += 0.1
+		executing_player_attacks = false
+	if character.name == "Enemy":
+		enemy_damage_mult += 0.1
+		executing_enemy_attacks = false
 	
 		
 
@@ -98,6 +111,7 @@ func _create_inventory_indicator():
 	return indicator
 
 func _on_button_pressed():
+	GS.level += 1
 	self.visible = false
 	previous_scene.visible = true
 
