@@ -76,8 +76,8 @@ func display_fish_part(fish_part):
 				var synergy = GS.clone_synergy(synergy_to_provide)
 				synergy.mouse_entered.connect(_on_mouse_entered_synergy_zone
 						.bind(synergy.synergy_data))
-				synergy.mouse_exited.connect(_on_mouse_entered_synergy_zone
-						.bind({}))
+				#synergy.mouse_exited.connect(_on_mouse_entered_synergy_zone
+						#.bind({}))
 				synergy.attached_to = self 
 				var synergy_collision_shape = CollisionShape2D.new()
 				var synergy_shape = RectangleShape2D.new()

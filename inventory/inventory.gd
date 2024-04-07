@@ -61,10 +61,13 @@ func add_fish_to_inventory(fish_to_add, synergy):
 			var is_valid_synergy_placement = false
 			var fallback_counter = 0
 			var rand_side = 0
+			var previous_side = -1
 			# synergy won't change at this point, 
 			# but this can check if we should even do these next steps
 			while synergy != null and not is_valid_synergy_placement:
 				rand_side = rng.randi_range(0, 4)
+				if rand_side == previous_side:
+					continue
 				if rand_side == 0: 
 					# slot above this fish part will be # rows back
 					var potential_spot = \
@@ -84,13 +87,27 @@ func add_fish_to_inventory(fish_to_add, synergy):
 					var potential_spot = rand_fish_part_abs_ind - 1
 					if not new_abs_inds.has(potential_spot):
 						is_valid_synergy_placement = true
+				
+				if is_valid_synergy_placement and previous_side == -1:
+					# 50% change to add another synergy
+					var roll = rng.randf()
+					print("roll %s, double the synergy?" 
+								% roll)
+					if roll <= 0.25:
+						previous_side = rand_side
+						is_valid_synergy_placement = false
 				fallback_counter += 1
 				if fallback_counter >= 10:
 					print("hitting fallback")
 					break
+					
 			if is_valid_synergy_placement:
+				if previous_side != -1:
+					rand_fish_part.set_adjacent_synergy_to_provide(
+							synergy, previous_side)
 				rand_fish_part.set_adjacent_synergy_to_provide(
 						synergy, rand_side)
+				
 			
 			fish_placed = true
 			emit_signal("fishes_changed", new_abs_inds)

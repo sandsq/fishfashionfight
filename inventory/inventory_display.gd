@@ -33,9 +33,15 @@ func _ready():
 				_on_received_hover_signal_from_slot)
 		#isd.set_position(GS.index_to_grid(i) * 1000)
 		add_child(isd)
-	print("inventory display, not auto adding to inventory")
-	#inventory.add_to_inventory()
-	#inventory.fishes_changed.connect(_on_fishes_changed)
+	
+	var auto_add = false
+	if auto_add:
+		inventory.add_to_inventory()
+		inventory.fishes_changed.connect(_on_fishes_changed)
+	else:
+		print("inventory display, not auto adding to inventory")
+	
+	
 	update_inventory_display()
 	
 
