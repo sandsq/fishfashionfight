@@ -74,12 +74,14 @@ func execute_actions(character, opponent, display, indicator):
 				if s != {}:
 					info_label_to_use.text += str(s)
 			var damage_mult = 1.0
+			var rotation_amount = 720.0
 			if character.name == "Player":
 				damage_mult = player_damage_mult
 			if character.name == "Enemy":
 				damage_mult = enemy_damage_mult
+				rotation_amount = -720.0
 			await character.draw_weapon(fish_part, damage_mult)
-			await character.attack(fish_part, opponent.global_position + Vector2(50, 50))
+			await character.attack(fish_part, opponent.global_position + Vector2(50, 50), 0.4, rotation_amount)
 			character.weapon.texture = null
 			info_label_to_use.text = ""
 		else:
@@ -122,7 +124,7 @@ func _populate_inventory_display(character, display):
 func _create_inventory_indicator():
 	var indicator = ColorRect.new()
 	indicator.set_size(Vector2(48, 48))
-	indicator.color = "#ffffff"
+	indicator.color = Color(0.9, 0.9, 0.9, 0.8)
 	indicator.z_index = 1
 	#inventory_display_highlighter.set_position(
 			#inventory_display.get_child(0).global_position)

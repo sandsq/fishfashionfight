@@ -13,13 +13,13 @@ script = ExtResource("1_sq82t")
 offset_top = 256.0
 offset_right = 640.0
 offset_bottom = 360.0
-color = Color(0.941176, 0.898039, 0.423529, 1)
+color = Color(0.780392, 0.737255, 0.266667, 1)
 
 [node name="Ocean" type="ColorRect" parent="."]
 offset_top = 192.0
 offset_right = 640.0
 offset_bottom = 240.0
-color = Color(0.168627, 0.67451, 0.741176, 1)
+color = Color(0.133333, 0.529412, 0.580392, 1)
 
 [node name="Shore" type="ColorRect" parent="."]
 offset_top = 240.0
@@ -30,7 +30,7 @@ color = Color(0.721569, 0.968627, 1, 1)
 [node name="Sky" type="ColorRect" parent="."]
 offset_right = 640.0
 offset_bottom = 192.0
-color = Color(0.231373, 0.886275, 1, 1)
+color = Color(0.129412, 0.760784, 0.870588, 1)
 
 [node name="InventoryDisplay" type="GridContainer" parent="."]
 z_index = 2
@@ -102,10 +102,12 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 autowrap_mode = 2
 
 [node name="Button2" type="Button" parent="."]
+visible = false
 offset_left = 16.0
 offset_top = 16.0
 offset_right = 119.0
 offset_bottom = 47.0
+disabled = true
 text = "Show invent
 (debug)"
 
