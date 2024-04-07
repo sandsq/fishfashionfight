@@ -205,7 +205,7 @@ func process_timing_bar_moving_left_finished():
 	info_label.text = "Extreme potential undershoot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 	emit_signal("timing_round_finished")
 
-func roll_fish(cast_duration = 0.3):
+func roll_fish(cast_duration = 0.5):
 	var fishing_line_start = fishing_rod.get_point_position(1)
 	var fishing_line_end = Vector2(casting_position, 320)
 	var fishing_line = Line2D.new()
@@ -216,8 +216,9 @@ func roll_fish(cast_duration = 0.3):
 	fishing_line.add_point(fishing_line_start)
 	add_child(fishing_line)
 	var final_points = PackedVector2Array([fishing_line_start, fishing_line_end])
+	var cast_duration_scaled = cast_duration * casting_position / (x_offset + fishing_bar_size.x)
 	var tween = create_tween()
-	tween.tween_property(fishing_line, "points", final_points, cast_duration)
+	tween.tween_property(fishing_line, "points", final_points, cast_duration_scaled)
 	input_allowed = false
 	tween.play()
 	await tween.finished
@@ -235,9 +236,9 @@ func roll_fish(cast_duration = 0.3):
 	add_child(fishing_line)
 	var tween_line_back = create_tween()
 	var back_points = PackedVector2Array([fishing_line_start, fishing_line_start])
-	tween_line_back.tween_property(fishing_line, "points", back_points, 2 * cast_duration)
+	tween_line_back.tween_property(fishing_line, "points", back_points, 2 * cast_duration_scaled)
 	var tween_fish_back = create_tween()
-	tween_fish_back.tween_property(fish_sprite, "position", fishing_line_start, 2 * cast_duration)
+	tween_fish_back.tween_property(fish_sprite, "position", fishing_line_start, 2 * cast_duration_scaled)
 	tween_line_back.play()
 	tween_fish_back.play()
 	await tween_fish_back.finished

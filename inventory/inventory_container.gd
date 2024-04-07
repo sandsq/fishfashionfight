@@ -44,4 +44,4 @@ func _change_info(data):
 
 func _on_active_inventory_display_received_fish_part_hover_from_slot(data):
 	print("invent container, data %s" % data)
-	fish_part_info.text = "Damage: %s" % data.damage
+	fish_part_info.text = "Base damage: %s" % data.damage
