@@ -6,4 +6,6 @@
 [node name="OneByOne" instance=ExtResource("1_mbeem")]
 texture = ExtResource("2_uqrkg")
 arrangement = Array[Vector2]([Vector2(0, 0)])
+base_damage = 0.5
+base_poison = 5
 species = "one_by_one"

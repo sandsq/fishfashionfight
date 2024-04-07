@@ -205,7 +205,7 @@ func process_timing_bar_moving_left_finished():
 	info_label.text = "Extreme potential undershoot, randomness factor %s, distance %s" % [snapped(rolled_inaccuracy, 0.1), round(_convert_absolute_to_bar_pos(casting_position))]
 	emit_signal("timing_round_finished")
 
-func roll_fish(cast_duration = 0.5):
+func roll_fish(cast_duration = 0.3):
 	var fishing_line_start = fishing_rod.get_point_position(1)
 	var fishing_line_end = Vector2(casting_position, 320)
 	var fishing_line = Line2D.new()

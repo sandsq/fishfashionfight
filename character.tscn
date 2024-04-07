@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://bibg3h6b8787w"]
+[gd_scene load_steps=17 format=3 uid="uid://bibg3h6b8787w"]
 
 [ext_resource type="Texture2D" uid="uid://buk7p18ney78g" path="res://assets/character.png" id="1_de2i3"]
 [ext_resource type="Script" path="res://character.gd" id="1_grc1o"]
+[ext_resource type="Shader" path="res://poison.gdshader" id="2_5a5xn"]
 [ext_resource type="Shader" path="res://healing.gdshader" id="2_u6250"]
 [ext_resource type="PackedScene" uid="uid://cu4b76nvj43bn" path="res://character_stats.tscn" id="3_6l03o"]
 [ext_resource type="PackedScene" uid="uid://ew64v7v1l0j5" path="res://hurtbox.tscn" id="3_h7cqb"]
@@ -11,6 +12,8 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7l6t0"]
 resource_local_to_scene = true
+shader = ExtResource("2_5a5xn")
+shader_parameter/active = false
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rb226"]
 radius = 16.0
@@ -21,27 +24,80 @@ height = 64.0
 
 [sub_resource type="Animation" id="Animation_63i46"]
 length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_xemxp"]
 resource_name = "heal"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_u6250")]
+}
+
+[sub_resource type="Animation" id="Animation_00t1l"]
+resource_name = "poison"
 length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:material:shader")
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/active")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
-"values": [ExtResource("2_u6250"), null, ExtResource("2_u6250"), null]
+"values": [true, false, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_5a5xn")]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wvwbm"]
 _data = {
 "RESET": SubResource("Animation_63i46"),
-"heal": SubResource("Animation_xemxp")
+"heal": SubResource("Animation_xemxp"),
+"poison": SubResource("Animation_00t1l")
 }
 
 [node name="Character" type="CharacterBody2D"]
@@ -85,9 +141,8 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "10 / 10"
 
 [node name="DamageLabel" type="Label" parent="."]
-offset_left = -16.0
 offset_top = 24.0
-offset_right = 4.0
+offset_right = 20.0
 offset_bottom = 47.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 
@@ -95,6 +150,14 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 libraries = {
 "": SubResource("AnimationLibrary_wvwbm")
 }
+
+[node name="StatusLabel" type="Label" parent="."]
+offset_left = -16.0
+offset_top = 40.0
+offset_right = 16.0
+offset_bottom = 63.0
+theme_override_colors/font_color = Color(0.423529, 0, 0.439216, 1)
+horizontal_alignment = 1
 
 [connection signal="health_changed" from="CharacterStats" to="." method="_on_character_stats_health_changed"]
 [connection signal="max_health_changed" from="CharacterStats" to="." method="_on_character_stats_max_health_changed"]

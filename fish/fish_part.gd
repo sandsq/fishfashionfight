@@ -3,6 +3,7 @@ class_name FishPart
 
 @export var damage: float = 1
 @export var lifesteal: float = 0.0
+@export var poison: int = 0
 
 var parent_fish: Entity
 var texture: Texture
