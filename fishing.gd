@@ -242,8 +242,14 @@ func roll_fish(cast_duration = 0.5):
 	#func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
 	if hit_was_accurate:
 		synergy = Synergy.instantiate()
-		synergy.synergy_data = {
-				"damage_boost": snapped(rng.randf_range(1, 4), 0.5)}
+		if chosen_fish.name == "SmallL":
+			synergy.synergy_data = {
+					"lifesteal_amount": 0.5
+			}
+		else:
+			synergy.synergy_data = {
+					"damage_boost": snapped(rng.randf_range(1.5, 4), 0.5)
+			}
 	
 	
 	# technically should do this while reeling back so that computation

@@ -21,11 +21,6 @@ func _ready():
 	character_stats.current_health = character_stats.current_health
 	character_stats.max_health = character_stats.max_health
 
-func _process(_delta):
-	if Input.is_action_just_pressed("attack"):
-		if self.name == "Player":
-			print("dummy attack for testing purposes")
-			attack(Vector2(290, 150))
 
 func draw_weapon(fish_part, damage_mult = 1.0, duration=0.25):
 	weapon.set_weapon_damage(fish_part.damage * damage_mult)
@@ -37,11 +32,13 @@ func draw_weapon(fish_part, damage_mult = 1.0, duration=0.25):
 	tween.play()
 	await tween.finished
 
-func attack(target_position, duration=0.4):
+func attack(fish_part, target_position, duration=0.4):
 	var weapon_start_position = weapon.global_position
 	var tween = create_tween()
 	tween.tween_property(weapon, "global_position", target_position, duration)
 	await tween.finished
+	if fish_part.lifesteal > 0:
+		self.heal(weapon.get_weapon_damage() * fish_part.lifesteal)
 	var tween_back = create_tween()
 	tween_back.tween_property(weapon, "global_position", weapon_start_position, duration / 2)
 	tween_back.play()
@@ -49,11 +46,14 @@ func attack(target_position, duration=0.4):
 
 func heal(heal_amount):
 	self.character_stats.current_health += heal_amount
+	print("%s healed %s damage" % [self.name, snapped(heal_amount, 0.1)])
+	damage_label.text = "+%.1f" % heal_amount
 	animation_player.play("heal")
 
 func _on_hurtbox_area_entered(area):
 	var damage_taken = area.damage
 	character_stats.current_health -= damage_taken
+	print("%s took %s damage" % [self.name, snapped(damage_taken, 0.1)])
 	#print("character %s got hurt by something entering its hurtbox" % self.name)
 	damage_label.text = "-%.1f" % damage_taken
 	

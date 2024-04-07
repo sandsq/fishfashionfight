@@ -2,6 +2,7 @@ extends Node2D
 class_name FishPart
 
 @export var damage: float = 1
+@export var lifesteal: float = 0.0
 
 var parent_fish: Entity
 var texture: Texture
@@ -38,6 +39,8 @@ func process_received_synergy_data():
 	for single_synergy_data in received_synergy_data:
 		if single_synergy_data.has("damage_boost"):
 			damage = damage * single_synergy_data.damage_boost
+		if single_synergy_data.has("lifesteal_amount"):
+			lifesteal += single_synergy_data.lifesteal_amount
 	return received_synergy_data
 
 func set_adjacent_synergy_to_provide(data, ind):
