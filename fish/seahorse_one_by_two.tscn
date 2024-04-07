@@ -7,3 +7,4 @@
 texture = ExtResource("2_1yvg2")
 arrangement = Array[Vector2]([Vector2(0, 0), Vector2(0, 1)])
 base_damage = 0.5
+species = "seahorse"

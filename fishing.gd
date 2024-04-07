@@ -38,7 +38,7 @@ var Fancy = preload("res://fish/fancy_one_by_one.tscn")
 var Round = preload("res://fish/round_two_by_two.tscn")
 var Seahorse = preload("res://fish/seahorse_one_by_two.tscn")
 var Sword = preload("res://fish/sword_two_by_one.tscn")
-var available_fish = [[OneByOne, OneByTwo, Fancy, Seahorse], [SmallL, TwoByOne, Sword], [UFish, Round]]
+var available_fish = [[OneByOne, Fancy], [Seahorse, OneByTwo], [SmallL, TwoByOne, Sword], [UFish, Round]]
 var inventory = null
 var input_allowed = true
 var hit_was_accurate = false
@@ -221,7 +221,7 @@ func roll_fish(cast_duration = 0.5):
 	input_allowed = false
 	tween.play()
 	await tween.finished
-	var fish_size_index = min(floor(((casting_position - fishing_bar_global_pos.x) / fishing_bar_size.x) * available_fish.size()), available_fish.size() - 1) # exact dimensions are annoying to keep track of because of things with thickness, timing bar offset, etc., so just use this hack
+	var fish_size_index = min(floor(((casting_position - fishing_bar_global_pos.x - x_offset) / right_distance) * available_fish.size()), available_fish.size() - 1) # exact dimensions are annoying to keep track of because of things with thickness, timing bar offset, etc., so just use this hack
 	var fish_size_options = available_fish[fish_size_index]
 	var fish_size_options_index = randi_range(0, fish_size_options.size() - 1)
 	var chosen_fish = fish_size_options[fish_size_options_index].instantiate()
@@ -252,9 +252,13 @@ func roll_fish(cast_duration = 0.5):
 	#func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
 	if hit_was_accurate:
 		synergy = Synergy.instantiate()
-		if chosen_fish.name == "SmallL":
+		if chosen_fish.species == "small_l":
 			synergy.synergy_data = {
 					"lifesteal_amount": 0.5
+			}
+		elif chosen_fish.species == "seahorse":
+			synergy.synergy_data = {
+					"lifesteal_amount": 1.0
 			}
 		else:
 			synergy.synergy_data = {
@@ -274,6 +278,7 @@ func roll_fish(cast_duration = 0.5):
 	hit_was_accurate = false
 
 func proceed_to_fashion_scene():
+	self.set_process(false)
 	var new_scene = InventoryContainer.instantiate()
 	print("inventory right before switching to fashion scene %s" 
 			% [inventory])

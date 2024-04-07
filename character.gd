@@ -11,6 +11,7 @@ var fish_part_weapons = null
 @onready var hp_label = $HPLabel
 @onready var damage_label = $DamageLabel
 @onready var animation_player = $AnimationPlayer
+@onready var hurtbox_collision = $Hurtbox/CollisionShape2D
 
 func _ready():
 	if flipped:

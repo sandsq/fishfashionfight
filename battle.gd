@@ -93,7 +93,7 @@ func execute_actions(character, opponent, display, indicator):
 		player_damage_mult += 0.1
 		executing_player_attacks = false
 	if character.name == "Enemy":
-		enemy_damage_mult += 0.1
+		enemy_damage_mult += 0.5
 		executing_enemy_attacks = false
 	
 
@@ -135,12 +135,14 @@ func _on_button_pressed():
 
 func _on_player_no_health():
 	print("player ran out of health")
+	enemy.hurtbox_collision.set_deferred("disabled", true)
 	did_player_win = false
 	battle_ended = true
 	victory_label.text = "You lost :( Try again!"
 
 func _on_enemy_no_health():
 	print("enemy ran out of health")
+	player.hurtbox_collision.set_deferred("disabled", true)
 	did_player_win = true
 	battle_ended = true
 	victory_label.text = "You won! Level %s -> %s. Keep going!" % [GS.level, GS.level + 1]
