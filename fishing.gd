@@ -19,6 +19,7 @@ const right_distance = fishing_bar_size.x - x_offset
 var InventoryContainer = preload("res://inventory/inventory_container.tscn")
 var InventoryDisplay = preload("res://inventory/inventory_display.tscn")
 var Inventory = preload("res://inventory/inventory.tscn")
+var Synergy = preload("res://synergy.tscn")
 ## does not immediately become re-enabled after timing bar is stopped because have to process getting a fish
 var timing_bar_can_be_started = true
 var timing_bar_is_moving_right = false
@@ -36,6 +37,7 @@ var UFish = preload("res://fish/u_fish.tscn")
 var available_fish = [[OneByOne, OneByTwo], [SmallL, TwoByOne], [UFish]]
 var inventory = null
 var input_allowed = true
+var hit_was_accurate = false
 
 @onready var fishing_bar = $FishingBar
 @onready var timing_bar = $FishingBar/TimingBar
@@ -148,6 +150,7 @@ func process_timing_bar_hit():
 		casting_position = a[1]
 		print("\thit was accurate, accuracy %s, final pos %s" 
 				% [rolled_accuracy, casting_position])
+		hit_was_accurate = true
 	elif timing_bar.position.x + timing_bar.size.x < good_margin.position.x:
 		var undershot_percentage = (x_offset - (good_margin.position.x \
 				- (timing_bar.position.x + timing_bar.size.x))) \
@@ -229,15 +232,26 @@ func roll_fish(cast_duration = 0.5):
 	
 	fishing_line.remove_child(fish_sprite)
 	
+	var synergy = null
+	var fish_part_synergy = -1
+	var fish_part_synergy_side = -1
+	#func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
+	if hit_was_accurate:
+		synergy = Synergy.instantiate()
+		synergy.synergy_data = {
+				"damage_boost": snapped(rng.randf_range(1, 4), 0.5)}
+	
+	
 	# technically should do this while reeling back so that computation
 	# time of fitting into inventory happens during the reel back
-	var fish_placed = inventory.add_fish_to_inventory(chosen_fish, null, -1, -1)
+	var fish_placed = inventory.add_fish_to_inventory(chosen_fish, synergy)
 	
 	reset_timing_state()
 	if fish_placed:
 		remaining_fish_allowed -= 1
 	input_allowed = true
 	timing_bar_can_be_started = true
+	hit_was_accurate = false
 
 func proceed_to_fashion_scene():
 	var new_scene = InventoryContainer.instantiate()
@@ -251,6 +265,8 @@ func proceed_to_fashion_scene():
 	remove_child(inventory_display)
 	new_scene.add_child(inventory_display)
 	new_scene.player_display = inventory_display
+	new_scene.player_display.received_hover_signal_from_slot.connect(
+			new_scene._change_info)
 	print("in proceed to fashion scene function, if synergies don't activate may need to manually update inventory display")
 	#new_scene.player_display.update_inventory_display()
 	

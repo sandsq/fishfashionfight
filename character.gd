@@ -10,6 +10,7 @@ var fish_part_weapons = null
 @onready var weapon = $Weapon
 @onready var hp_label = $HPLabel
 @onready var damage_label = $DamageLabel
+@onready var animation_player = $AnimationPlayer
 
 func _ready():
 	if flipped:
@@ -43,7 +44,10 @@ func attack(target_position, duration=0.4):
 	tween_back.tween_property(weapon, "global_position", weapon_start_position, duration / 2)
 	tween_back.play()
 	await tween_back.finished
-	
+
+func heal(heal_amount):
+	self.character_stats.current_health += heal_amount
+	animation_player.play("heal")
 
 func _on_hurtbox_area_entered(area):
 	var damage_taken = area.damage

@@ -19,7 +19,7 @@ signal no_health
 
 @onready var current_health = max_health:
 	set(new_health):
-		current_health = new_health
+		current_health = min(new_health, max_health)
 		emit_signal("health_changed", current_health)
 		if current_health <= 0:
 			emit_signal("no_health")

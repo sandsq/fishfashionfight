@@ -18,9 +18,13 @@ var OneByOne = preload("res://fish/one_by_one.tscn")
 var Synergy = preload("res://synergy.tscn")
 var drag_data = null
 var first_empty_index = 0 ## for more efficiency, could only check starting from empty slots. But a bit harder to track so not doing this for now
+var rng = RandomNumberGenerator.new()
+
+func _ready():
+	rng.seed = hash("fish")
 
 ## finds the first available slot that can fit the fish
-func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, fish_part_synergy_side: int):
+func add_fish_to_inventory(fish_to_add, synergy):
 	print("adding fish %s, it should already be instantiated" % fish_to_add)
 	var fish_parts = fish_to_add.make_fish_parts()
 	var relative_indexes = fish_to_add.get_arrangement_indexes()
@@ -50,6 +54,40 @@ func add_fish_to_inventory(fish_to_add, synergy, fish_part_synergy_target: int, 
 				#print("\tadding fish part %s" % fish_parts[fish_part_index])
 				inventory_fish_parts[new_abs_inds[fish_part_index]] \
 						= fish_parts[fish_part_index]
+			var rand_ind = rng.randi_range(0, fish_parts.size() - 1)
+			var rand_fish_part = fish_parts[rand_ind]
+			var rand_fish_part_abs_ind = new_abs_inds[rand_ind]
+			var is_valid_synergy_placement = false
+			var fallback_counter = 0
+			var rand_side = 0
+			while not is_valid_synergy_placement:
+				rand_side = rng.randi_range(0, 4)
+				if rand_side == 0: 
+					# slot above this fish part will be # rows back
+					var potential_spot = \
+							rand_fish_part_abs_ind - GS.INVENTORY_ROWS
+					if not new_abs_inds.has(potential_spot):
+						is_valid_synergy_placement = true
+				elif rand_side == 1:
+					var potential_spot = rand_fish_part_abs_ind + 1
+					if not new_abs_inds.has(potential_spot):
+						is_valid_synergy_placement = true
+				elif rand_side == 2:
+					var potential_spot = \
+							rand_fish_part_abs_ind + GS.INVENTORY_ROWS
+					if not new_abs_inds.has(potential_spot):
+						is_valid_synergy_placement = true
+				elif rand_side == 3:
+					var potential_spot = rand_fish_part_abs_ind - 1
+					if not new_abs_inds.has(potential_spot):
+						is_valid_synergy_placement = true
+				fallback_counter += 1
+				if fallback_counter >= 10:
+					break
+			if is_valid_synergy_placement:
+				rand_fish_part.set_adjacent_synergy_to_provide(
+						synergy, rand_side)
+			
 			fish_placed = true
 			emit_signal("fishes_changed", new_abs_inds)
 			break
